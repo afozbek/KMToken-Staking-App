@@ -1,7 +1,7 @@
 "use client";
 import { useContext, useEffect } from "react";
 import { WalletConnectorContext } from "../context/walletContext";
-import { connect } from "wagmi/actions";
+import { connect, disconnect, getAccount } from "wagmi/actions";
 import { config } from "../wagmi/config";
 import { injected, useAccount } from "wagmi";
 
@@ -12,6 +12,8 @@ export function useWalletConnector() {
   useEffect(() => {
     if (address) {
       setAccount(address);
+    } else {
+      setAccount("");
     }
   }, [address]);
 
@@ -23,8 +25,19 @@ export function useWalletConnector() {
     }
   };
 
+  const disconnectAccount = async () => {
+    try {
+      // gets the current connector
+      const { connector } = getAccount(config);
+      await disconnect(config, { connector });
+    } catch (err) {
+      console.log({ err });
+    }
+  };
+
   return {
     account,
     connectAccount,
+    disconnectAccount,
   };
 }
