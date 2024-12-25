@@ -1,10 +1,7 @@
 import { claimTokensTx, isFaucetEnabled } from "@/app/blockchain";
-import { useWalletConnector } from "@/app/hooks/useWalletConnector";
 import { useEthersSigner } from "@/app/hooks/wagmi/utils";
-import { FaucetAbi } from "@/app/blockchainUtils/abi";
-import { config } from "@/app/wagmi/config";
 import React, { useEffect, useState } from "react";
-import { useReadContract } from "wagmi";
+import { Loader } from "lucide-react";
 
 interface Props {}
 
@@ -44,12 +41,18 @@ const FaucetTab = () => {
     setCanClaim(false);
   };
 
-  return (
-    <div className="text-center">
+  const renderContent = () => {
+    if (isLoading) {
+      return (
+        <div className="flex items-center text-center justify-center">
+          <Loader size={40} />
+        </div>
+      );
+    }
+
+    return (
       <>
-        {isLoading ? (
-          <p>Loading..</p>
-        ) : canClaim ? (
+        {canClaim ? (
           <p className="text-green-500 font-medium">
             You are eligible to claim tokens!
           </p>
@@ -70,8 +73,10 @@ const FaucetTab = () => {
           {isLoading ? "Loading..." : "Claim Tokens"}
         </button>
       </>
-    </div>
-  );
+    );
+  };
+
+  return <div className="text-center">{renderContent()}</div>;
 };
 
 export default FaucetTab;
