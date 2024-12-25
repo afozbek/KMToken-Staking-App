@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Tomorrow } from "next/font/google";
 import "./globals.css";
 import { cookieToInitialState } from "wagmi";
-import { config } from "./wagmi/config";
+import { config } from "../wagmi/config";
 import { headers } from "next/headers";
-import { WagmiProviders } from "./wagmi/Provider";
+import { WagmiProviders } from "../wagmi/Provider";
 import { WalletConnectorProvider } from "./context/walletContext";
 import DefaultLayout from "@/layouts/DefaultLayout";
 

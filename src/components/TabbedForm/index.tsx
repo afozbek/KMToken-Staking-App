@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { TabType } from "./types";
 import Header from "./Header";
 import { useEthersSigner } from "@/app/hooks/wagmi/utils";
-import { stakeTx, unstakeTx, claimTokensTx, approveTx } from "@/app/blockchain";
+import { stakeTx, unstakeTx, claimTokensTx, approveTx } from "@/blockchain";
 import FaucetTab from "./FaucetTab";
 
 const TabbedForm = () => {

@@ -1,4 +1,4 @@
-import { claimTokensTx, isFaucetEnabled } from "@/app/blockchain";
+import { claimTokensTx, isFaucetEnabled } from "@/blockchain";
 import { useEthersSigner } from "@/app/hooks/wagmi/utils";
 import React, { useEffect, useState } from "react";
 import { Loader } from "lucide-react";

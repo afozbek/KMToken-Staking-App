@@ -2,7 +2,7 @@
 import { useContext, useEffect } from "react";
 import { WalletConnectorContext } from "../context/walletContext";
 import { connect, disconnect, getAccount } from "wagmi/actions";
-import { config } from "../wagmi/config";
+import { config } from "../../wagmi/config";
 import { injected, useAccount } from "wagmi";
 
 export function useWalletConnector() {

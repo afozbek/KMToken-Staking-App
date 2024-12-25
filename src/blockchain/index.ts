@@ -5,12 +5,12 @@ import {
   STAKING_CONTRACT_ADDRESS,
   KOMMUNUTY_TOKEN_CONTRACT_ADDRESS,
   FAUCET_CONTRACT_ADDRESS,
-} from "../blockchainUtils/constants";
+} from "@/blockchain/blockchainUtils/constants";
 import {
   FaucetAbi,
   KommunityTokenAbi,
   StakingAbi,
-} from "../blockchainUtils/abi";
+} from "@/blockchain/blockchainUtils/abi";
 
 const getAllowance = async (
   singer: JsonRpcSigner,
