@@ -9,7 +9,7 @@ export default function DefaultLayout({
   return (
     <div className="main-layout">
       <Header />
-      <div className="bg-white h-screen">{children}</div>
+      <div className=" h-screen">{children}</div>
     </div>
   );
 }
