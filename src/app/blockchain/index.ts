@@ -5,8 +5,12 @@ import {
   STAKING_CONTRACT_ADDRESS,
   KOMMUNUTY_TOKEN_CONTRACT_ADDRESS,
   FAUCET_CONTRACT_ADDRESS,
-} from "../utils/constants";
-import { FaucetAbi, KommunityTokenAbi, StakingAbi } from "../utils/abi";
+} from "../blockchainUtils/constants";
+import {
+  FaucetAbi,
+  KommunityTokenAbi,
+  StakingAbi,
+} from "../blockchainUtils/abi";
 
 const getAllowance = async (
   singer: JsonRpcSigner,
@@ -106,4 +110,19 @@ export const approveTx = async (amount: string, singer: JsonRpcSigner) => {
   await tx.wait();
 
   return tx.hash;
+};
+
+export const isFaucetEnabled = async (
+  singer: JsonRpcSigner
+): Promise<boolean> => {
+  const faucetContract = new Contract(
+    FAUCET_CONTRACT_ADDRESS,
+    FaucetAbi,
+    singer
+  );
+
+  const result = await faucetContract.canClaimTokens(singer.address);
+  console.log({ result });
+
+  return typeof result === "boolean" ? result : false;
 };

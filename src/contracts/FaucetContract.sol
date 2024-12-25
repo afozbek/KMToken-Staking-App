@@ -11,10 +11,10 @@ contract Faucet is Ownable(msg.sender) {
 
     mapping(address => uint256) public lastClaim;
 
-    constructor(address _tokenAddress, uint256 _dripAmount, uint256 _cooldownTime) {
+    constructor(address _tokenAddress, uint256 _dripAmount) {
         token = IERC20(_tokenAddress);
         dripAmount = _dripAmount;
-        cooldownTime = _cooldownTime;
+        cooldownTime = 1800; // 30 minutes = 1800 seconds
     }
 
     function claimTokens() external {
@@ -23,6 +23,17 @@ contract Faucet is Ownable(msg.sender) {
 
         lastClaim[msg.sender] = block.timestamp;
         require(token.transfer(msg.sender, dripAmount), "Token transfer failed");
+    }
+
+    // New function to check if a user is allowed to claim
+    function canClaimTokens(address user) external view returns (bool) {
+        if (block.timestamp < lastClaim[user] + cooldownTime) {
+            return false; // Cooldown active
+        }
+        if (token.balanceOf(address(this)) < dripAmount) {
+            return false; // Faucet is empty
+        }
+        return true; // User is allowed to claim
     }
 
     function setDripAmount(uint256 _dripAmount) external onlyOwner {
@@ -40,4 +51,5 @@ contract Faucet is Ownable(msg.sender) {
     function withdrawTokens(uint256 amount) external onlyOwner {
         require(token.transfer(owner(), amount), "Withdraw failed");
     }
+
 }

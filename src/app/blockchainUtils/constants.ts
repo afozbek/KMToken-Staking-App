@@ -10,4 +10,4 @@ export const STAKING_CONTRACT_ADDRESS =
 
 // Faucet Contract that distributes Kommunity Token to users
 export const FAUCET_CONTRACT_ADDRESS =
-  "0x4eD48CE28bc2784AA53E71cbac76095Da68b8004";
+  "0x88a6ec42b4cD9BF51cE8E23B58F21BB0d8f176D3";
