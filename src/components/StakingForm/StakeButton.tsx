@@ -1,4 +1,4 @@
-import LoadingIcon from "../LoadingIcon";
+import LoadingIcon from "../icons/LoadingIcon";
 
 interface StakeButtonProps {
   disabled: boolean;

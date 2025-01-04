@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import TokenIcon from "../TokenIcon";
+import TokenIcon from "../icons/TokenIcon";
 import ConnectBtn from "./ConnectBtn";
 import DropdownMenu from "./DropdownMenu";
 

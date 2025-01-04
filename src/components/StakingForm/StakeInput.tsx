@@ -1,4 +1,4 @@
-import TokenIcon from "../TokenIcon";
+import TokenIcon from "../icons/TokenIcon";
 
 interface StakeInputProps {
   amount: string;

@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import TokenIcon from "../TokenIcon";
+import TokenIcon from "../icons/TokenIcon";
 import { navLinks } from "./Navigation";
 import React from "react";
 
