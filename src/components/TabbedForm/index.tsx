@@ -5,6 +5,7 @@ import Header from "./Header";
 import { useEthersSigner } from "@/app/hooks/wagmi/utils";
 import { stakeTx, unstakeTx, claimTokensTx, approveTx } from "@/blockchain";
 import FaucetTab from "./FaucetTab";
+import StakingForm from "@/components/StakingForm";
 
 const TabbedForm = () => {
   const [activeTab, setActiveTab] = useState<TabType>(TabType.Stake);
@@ -174,6 +175,8 @@ const TabbedForm = () => {
           </div>
         )}
       </div>
+
+      <StakingForm />
     </div>
   );
 };

@@ -1,9 +1,10 @@
-import TabbedForm from "../components/TabbedForm";
+import StakingForm from "@/components/StakingForm";
 
 export default function Home() {
   return (
     <div>
-      <TabbedForm />
+      {/* <TabbedForm /> */}
+      <StakingForm />
     </div>
   );
 }

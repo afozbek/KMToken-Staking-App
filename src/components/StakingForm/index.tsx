@@ -1,51 +1,59 @@
 "use client";
 
-import { useEthersSigner } from "@/app/hooks/wagmi/utils";
-import { JsonRpcSigner } from "ethers";
 import React, { useState } from "react";
+import TabButtons from "./TabButtons";
+import StakeInput from "./StakeInput";
+import TransactionDetails from "./TransactionDetails";
+import TermsCheckbox from "./TermsCheckbox";
+import StakeButton from "./StakeButton";
 
-interface Props {
-  onStake: (amount: string, signer: JsonRpcSigner) => void;
-}
-
-const StakingForm = (props: Props) => {
+const StakingForm = () => {
+  const [selectedTab, setSelectedTab] = useState<"stake" | "unstake" | "claim">(
+    "stake"
+  );
   const [amount, setAmount] = useState("");
-  const [error, setError] = useState("");
+  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
 
-  const signer = useEthersSigner();
+  const handleMaxClick = () => {
+    // Implement max amount logic
+    setAmount("100"); // Example value
+  };
 
-  const { onStake } = props;
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!amount || Number(amount) <= 0) {
-      setError("Please enter a valid positive number.");
-      return;
-    }
-
-    if (!signer) {
-      throw new Error("Signer not defined");
-    }
-
-    setError("");
-    onStake(amount, signer); // Pass the amount to the parent component or staking function
-    setAmount(""); // Reset the input field
+  const handleStake = () => {
+    // Implement stake logic
+    console.log("Staking:", amount);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="amount">Amount to Stake:</label>
-      <input
-        type="number"
-        id="amount"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-        placeholder="Enter amount"
+    <div className="bg-white rounded-xl p-6 max-w-md mx-auto font-fontTomorrow">
+      {/* Header */}
+      <div className="text-center mb-6">
+        <h2 className="text-xl font-semibold mb-2">Stake ETH</h2>
+        <p className="text-gray-600">
+          Stake ETH and recieve dETH while staking
+        </p>
+      </div>
+
+      <TabButtons selectedTab={selectedTab} onTabChange={setSelectedTab} />
+
+      <StakeInput
+        amount={amount}
+        onAmountChange={setAmount}
+        onMaxClick={handleMaxClick}
       />
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <button type="submit">Stake</button>
-    </form>
+
+      <TransactionDetails />
+
+      <TermsCheckbox
+        isAccepted={isTermsAccepted}
+        onAcceptChange={setIsTermsAccepted}
+      />
+
+      <StakeButton
+        disabled={!isTermsAccepted || !amount}
+        onClick={handleStake}
+      />
+    </div>
   );
 };
 
