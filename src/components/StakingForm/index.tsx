@@ -1,84 +1,71 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useAccount, useReadContracts } from "wagmi";
-import { formatEther } from "viem";
+import React, { useEffect, useState } from "react";
 import TabButtons from "./TabButtons";
 import StakeInput from "./StakeInput";
 import TransactionDetails from "./TransactionDetails";
 import TermsCheckbox from "./TermsCheckbox";
 import StakeButton from "./StakeButton";
 import { TabType } from "../TabbedForm/types";
-import { approveTx, stakeTx, unstakeTx } from "@/blockchain";
 import { useEthersSigner } from "@/app/hooks/wagmi/utils";
 import {
-  KOMMUNUTY_TOKEN_CONTRACT_ADDRESS,
-  STAKING_CONTRACT_ADDRESS,
-} from "@/blockchain/blockchainUtils/constants";
-import { Contract } from "ethers";
-import {
-  KommunityTokenAbi,
-  StakingAbi,
-} from "@/blockchain/blockchainUtils/abi";
+  approveTx,
+  getBalance,
+  stakeTx,
+  unstakeTx,
+  getStakedAmount,
+} from "@/blockchain";
+import { formatBalance, tokenSymbol } from "@/blockchain/utils";
 
 const StakingForm = () => {
   const [selectedTab, setSelectedTab] = useState<TabType>(TabType.Stake);
   const [amount, setAmount] = useState("");
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [stakedAmount, setStakedAmount] = useState("0");
-
-  const signer = useEthersSigner();
-  const { address } = useAccount();
-
-  // Get user's token balance
-  const { data: contractInfo } = useReadContracts({
-    allowFailure: false,
-    contracts: [
-      {
-        address: KOMMUNUTY_TOKEN_CONTRACT_ADDRESS,
-        abi: KommunityTokenAbi,
-        functionName: "balanceOf",
-        args: [address],
-      },
-      {
-        address: KOMMUNUTY_TOKEN_CONTRACT_ADDRESS,
-        abi: KommunityTokenAbi,
-        functionName: "symbol",
-      },
-    ],
+  const [tokenBalance, setTokenBalance] = useState({
+    balance: "0",
+    formattedBalance: "0",
+  });
+  const [stakedAmount, setStakedAmount] = useState({
+    amount: "0",
+    formattedAmount: "0",
   });
 
-  const kommunityTokenBalance = contractInfo
-    ? (contractInfo as bigint[])[0]
-    : 0;
-  const tokenSymbol = contractInfo ? (contractInfo as string[])[1] : "";
+  const signer = useEthersSigner();
 
-  // Get user's staked amount from contract
   useEffect(() => {
-    const getStakedAmount = async () => {
-      if (signer && address) {
-        try {
-          const contract = new Contract(
-            STAKING_CONTRACT_ADDRESS,
-            StakingAbi,
-            signer
-          );
-          const stake = await contract.stakes(address);
-          setStakedAmount(formatEther(stake.amount));
-        } catch (err) {
-          console.error("Error fetching staked amount:", err);
-        }
-      }
+    if (!signer) return;
+
+    const getKommunityTokenBalance = async () => {
+      const balance = await getBalance(signer.address, signer);
+
+      setTokenBalance({
+        balance,
+        formattedBalance: formatBalance(balance),
+      });
     };
 
-    getStakedAmount();
-  }, [signer, address]);
+    getKommunityTokenBalance();
+  }, [signer]);
+
+  useEffect(() => {
+    if (!signer) return;
+
+    const fetchStakedAmount = async () => {
+      const amount = await getStakedAmount(signer);
+      setStakedAmount({
+        amount,
+        formattedAmount: formatBalance(amount),
+      });
+    };
+
+    if (selectedTab === TabType.Unstake) {
+      fetchStakedAmount();
+    }
+  }, [signer, selectedTab]);
 
   const handleMaxClick = () => {
-    if (kommunityTokenBalance) {
-      setAmount(formatEther(kommunityTokenBalance));
-    }
+    console.log("TODO: Handle MAX CLICK");
   };
 
   const handleStake = async () => {
@@ -152,13 +139,11 @@ const StakingForm = () => {
       <div className="mb-4 text-sm text-gray-600">
         {selectedTab === TabType.Stake ? (
           <div>
-            Available:{" "}
-            {kommunityTokenBalance ? formatEther(kommunityTokenBalance) : "0"}{" "}
-            {tokenSymbol}
+            Available: {tokenBalance.formattedBalance} {tokenSymbol}
           </div>
         ) : (
           <div>
-            Staked: {stakedAmount} {tokenSymbol}
+            Staked: {stakedAmount.formattedAmount} {tokenSymbol}
           </div>
         )}
       </div>

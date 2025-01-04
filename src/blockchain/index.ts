@@ -1,6 +1,7 @@
 "use client";
 
 import { formatUnits, Contract, JsonRpcSigner, parseUnits } from "ethers";
+
 import {
   STAKING_CONTRACT_ADDRESS,
   KOMMUNUTY_TOKEN_CONTRACT_ADDRESS,
@@ -12,8 +13,10 @@ import {
   StakingAbi,
 } from "@/blockchain/blockchainUtils/abi";
 
-const getAllowance = async (
-  singer: JsonRpcSigner,
+// --------------------------------TOKEN CONTRACT UTILS---------------------------------------------
+
+const _getAllowance = async (
+  signer: JsonRpcSigner,
   walletAddressToCheck: string,
   contractAddressToCheck: string,
   requestedTokenAmount: string
@@ -22,7 +25,7 @@ const getAllowance = async (
   const tokenContract = new Contract(
     KOMMUNUTY_TOKEN_CONTRACT_ADDRESS,
     KommunityTokenAbi,
-    singer
+    signer
   );
 
   const allowanceAmountWei = await tokenContract.allowance(
@@ -39,12 +42,58 @@ const getAllowance = async (
   return { isApproved: isEnoughApproved, approvedAmount: approvedAmount };
 };
 
+export const approveTx = async (amount: string, signer: JsonRpcSigner) => {
+  console.log("Approving");
+
+  const tokenContract = new Contract(
+    KOMMUNUTY_TOKEN_CONTRACT_ADDRESS,
+    KommunityTokenAbi,
+    signer
+  );
+
+  const rawTx = await tokenContract.approve.populateTransaction(
+    STAKING_CONTRACT_ADDRESS,
+    parseUnits(amount)
+  );
+
+  const tx = await signer.sendTransaction(rawTx);
+  await tx.wait();
+
+  return tx.hash;
+};
+
+export const getBalance = async (
+  address: string,
+  signer: JsonRpcSigner
+): Promise<string> => {
+  const tokenContract = new Contract(
+    KOMMUNUTY_TOKEN_CONTRACT_ADDRESS,
+    KommunityTokenAbi,
+    signer
+  );
+
+  return await tokenContract.balanceOf(address);
+};
+
+export const getTokenSymbol = async (signer: JsonRpcSigner) => {
+  const tokenContract = new Contract(
+    KOMMUNUTY_TOKEN_CONTRACT_ADDRESS,
+    KommunityTokenAbi,
+    signer
+  );
+
+  const symbol = await tokenContract.symbol();
+  return symbol;
+};
+
+// ---------------------------------STAKE CONTRACT ---------------------------------------------------
+
 export const stakeTx = async (amount: string, signer: JsonRpcSigner) => {
   const stakingContract = new Contract(STAKING_CONTRACT_ADDRESS, StakingAbi);
 
   const wallet = await signer.getAddress();
 
-  const result = await getAllowance(
+  const result = await _getAllowance(
     signer,
     wallet,
     STAKING_CONTRACT_ADDRESS,
@@ -79,7 +128,20 @@ export const unstakeTx = async (signer: JsonRpcSigner) => {
   return tx.hash;
 };
 
-// Claim Kommunity Token from faucet contract
+export const getStakedAmount = async (signer: JsonRpcSigner) => {
+  const stakingContract = new Contract(
+    STAKING_CONTRACT_ADDRESS,
+    StakingAbi,
+    signer
+  );
+
+  const stake = await stakingContract.stakes(signer.address);
+
+  return stake.amount;
+};
+
+// ---------------------------------FAUCET CONTRACT ---------------------------------------------------
+
 export const claimTokensTx = async (signer: JsonRpcSigner) => {
   const faucetContract = new Contract(FAUCET_CONTRACT_ADDRESS, FaucetAbi);
 
@@ -92,38 +154,16 @@ export const claimTokensTx = async (signer: JsonRpcSigner) => {
   return tx.hash;
 };
 
-export const approveTx = async (amount: string, singer: JsonRpcSigner) => {
-  console.log("Approving");
-
-  const tokenContract = new Contract(
-    KOMMUNUTY_TOKEN_CONTRACT_ADDRESS,
-    KommunityTokenAbi,
-    singer
-  );
-
-  const rawTx = await tokenContract.approve.populateTransaction(
-    STAKING_CONTRACT_ADDRESS,
-    parseUnits(amount)
-  );
-
-  const tx = await singer.sendTransaction(rawTx);
-  await tx.wait();
-
-  return tx.hash;
-};
-
 export const isFaucetEnabled = async (
-  singer: JsonRpcSigner
+  signer: JsonRpcSigner
 ): Promise<boolean> => {
   const faucetContract = new Contract(
     FAUCET_CONTRACT_ADDRESS,
     FaucetAbi,
-    singer
+    signer
   );
 
-  debugger;
-  const result = await faucetContract.canClaimTokens(singer.address);
-  console.log({ result });
+  const result = await faucetContract.canClaimTokens(signer.address);
 
   return typeof result === "boolean" ? result : false;
 };
