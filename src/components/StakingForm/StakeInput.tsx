@@ -29,7 +29,9 @@ const StakeInput = ({
         />
         <button
           onClick={onMaxClick}
-          className="absolute right-3 top-1/2 -translate-y-1/2 bg-blue-100 text-blue-600 px-3 py-1 rounded-md hover:bg-blue-200 transition-colors"
+          className="absolute right-3 top-1/2 -translate-y-1/2
+           bg-blue-100 text-blue-600 px-3 py-1 rounded-md 
+           hover:bg-blue-200 transition-colors font-semibold"
         >
           MAX
         </button>

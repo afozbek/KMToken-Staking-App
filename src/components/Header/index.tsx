@@ -9,6 +9,7 @@ import ConnectBtn from "./ConnectBtn";
 import DropdownMenu from "./DropdownMenu";
 import Image from "next/image";
 import TokenIcon from "../TokenIcon";
+import { Menu, X } from "lucide-react";
 
 const navLinks = [
   { name: "Exchange", icon: "🔄" },
@@ -20,9 +21,11 @@ const navLinks = [
 export default function Header() {
   const { address } = useAccount();
   const [showMenu, setShowMenu] = useState(false);
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [balance, setBalance] = useState({ raw: "0", formatted: "0" });
   const menuRef = useRef<HTMLElement | any>(null);
+  const mobileMenuRef = useRef<HTMLElement | any>(null);
   const signer = useEthersSigner();
 
   useEffect(() => {
@@ -50,6 +53,10 @@ export default function Header() {
     setShowMenu(false);
   });
 
+  useClickOutside(mobileMenuRef, () => {
+    setShowMobileMenu(false);
+  });
+
   if (!mounted) {
     return (
       <header className="bg-white text-gray-800 flex justify-between items-center p-4 shadow-sm">
@@ -65,7 +72,7 @@ export default function Header() {
     if (address) {
       return (
         <div className="flex items-center gap-4 relative">
-          <div className="flex items-center gap-2">
+          <div className="hidden sm:flex items-center gap-2">
             <TokenIcon />
             <span className="font-medium">{balance.formatted} ETH</span>
           </div>
@@ -80,7 +87,9 @@ export default function Header() {
               width={24}
               height={24}
             />
-            <span className="max-w-[120px] truncate">{address}</span>
+            <span className="max-w-[120px] truncate hidden sm:block">
+              {address}
+            </span>
           </button>
 
           {showMenu && (
@@ -97,11 +106,61 @@ export default function Header() {
     return <ConnectBtn />;
   };
 
+  const renderMobileMenu = () => {
+    if (!showMobileMenu) return null;
+
+    return (
+      <div
+        ref={mobileMenuRef}
+        className="fixed inset-0 z-50 bg-white lg:hidden"
+      >
+        <div className="p-4">
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-2xl text-blue-600 font-bold">Liquo</h1>
+            <button
+              onClick={() => setShowMobileMenu(false)}
+              className="p-2 hover:bg-gray-100 rounded-lg"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
+
+          <nav className="mb-8">
+            <ul className="space-y-6">
+              {navLinks.map((link) => (
+                <li key={link.name}>
+                  <a
+                    href="#"
+                    className="flex items-center gap-3 text-lg text-gray-600 hover:text-gray-900 transition-colors"
+                  >
+                    <span>{link.icon}</span>
+                    {link.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {address && (
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <div className="flex items-center gap-2 mb-4">
+                <TokenIcon />
+                <span className="font-medium">{balance.formatted} ETH</span>
+              </div>
+              <div className="text-sm text-gray-500 break-all">{address}</div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <header className="bg-white text-gray-800 flex justify-between items-center px-6 py-4 shadow-sm">
+    <header className="bg-white text-gray-800 flex justify-between items-center px-4 sm:px-6 py-4 shadow-sm">
       <div className="flex items-center gap-12">
         <h1 className="text-2xl text-blue-600 font-bold">Liquo</h1>
-        <nav>
+        {/* Hidden on mobile */}
+        <nav className="hidden lg:block">
           <ul className="flex items-center gap-8">
             {navLinks.map((link) => (
               <li key={link.name}>
@@ -118,7 +177,18 @@ export default function Header() {
         </nav>
       </div>
 
-      <div className="flex items-center gap-4">{renderConnectPart()}</div>
+      <div className="flex items-center gap-4">
+        {renderConnectPart()}
+        {/* Hidden on desktop */}
+        <button
+          onClick={() => setShowMobileMenu(true)}
+          className="p-2 hover:bg-gray-100 rounded-lg lg:hidden"
+        >
+          <Menu className="w-6 h-6" />
+        </button>
+      </div>
+
+      {renderMobileMenu()}
     </header>
   );
 }
