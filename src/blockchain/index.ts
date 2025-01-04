@@ -121,6 +121,7 @@ export const isFaucetEnabled = async (
     singer
   );
 
+  debugger;
   const result = await faucetContract.canClaimTokens(singer.address);
   console.log({ result });
 

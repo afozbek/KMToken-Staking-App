@@ -2,8 +2,9 @@
 import { useContext, useEffect } from "react";
 import { WalletConnectorContext } from "../context/walletContext";
 import { connect, disconnect, getAccount } from "wagmi/actions";
-import { config } from "../../wagmi/config";
+import { config } from "@/wagmi/config";
 import { injected, useAccount } from "wagmi";
+import { baseSepolia } from "viem/chains";
 
 export function useWalletConnector() {
   const { account, setAccount } = useContext(WalletConnectorContext);
@@ -19,7 +20,7 @@ export function useWalletConnector() {
 
   const connectAccount = async () => {
     try {
-      await connect(config, { connector: injected() });
+      await connect(config, { connector: injected(), chainId: baseSepolia.id });
     } catch (err) {
       console.log({ err });
     }

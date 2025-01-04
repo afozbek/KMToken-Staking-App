@@ -3,8 +3,6 @@ import { useEthersSigner } from "@/app/hooks/wagmi/utils";
 import React, { useEffect, useState } from "react";
 import { Loader } from "lucide-react";
 
-interface Props {}
-
 const FaucetTab = () => {
   const [canClaim, setCanClaim] = useState(true); // Simulate faucet claim state
   const [isLoading, setLoading] = useState(true);

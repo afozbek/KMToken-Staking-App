@@ -1,10 +1,9 @@
 "use client";
-import { type Config } from "@wagmi/core";
 import { JsonRpcSigner } from "ethers";
 import { BrowserProvider } from "ethers";
 import { useMemo } from "react";
 import { Account, Chain, Client } from "viem";
-import { useConnectorClient, Transport } from "wagmi";
+import { useConnectorClient, Transport, Config } from "wagmi";
 
 /** Hook to convert a viem Wallet Client to an ethers.js Signer. */
 export function useEthersSigner({ chainId }: { chainId?: number } = {}) {

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "^5.1.0",
+    "@tanstack/react-query": "^5.62.14",
     "ethers": "^6.13.4",
     "lucide-react": "^0.469.0",
     "next": "15.1.2",
