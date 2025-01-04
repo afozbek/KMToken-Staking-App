@@ -6,7 +6,7 @@ import StakeInput from "./StakeInput";
 import TransactionDetails from "./TransactionDetails";
 import TermsCheckbox from "./TermsCheckbox";
 import StakeButton from "./StakeButton";
-import { TabType } from "../TabbedForm/types";
+
 import { useEthersSigner } from "@/app/hooks/wagmi/utils";
 import {
   approveTx,
@@ -17,6 +17,13 @@ import {
 } from "@/blockchain";
 import { formatBalance, tokenSymbol } from "@/blockchain/utils";
 import { JsonRpcSigner } from "ethers";
+
+export enum TabType {
+  Faucet = "faucet",
+  Stake = "stake",
+  Unstake = "unstake",
+  Approve = "approve",
+}
 
 const StakingForm = () => {
   const [selectedTab, setSelectedTab] = useState<TabType>(TabType.Stake);

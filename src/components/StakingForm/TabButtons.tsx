@@ -1,4 +1,4 @@
-import { TabType } from "../TabbedForm/types";
+import { TabType } from ".";
 
 interface TabButtonsProps {
   selectedTab: TabType;

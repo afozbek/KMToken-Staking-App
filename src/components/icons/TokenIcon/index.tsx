@@ -1,13 +1,21 @@
 import React from "react";
 
-const TokenIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
+interface TokenIconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number;
+}
+
+const TokenIcon: React.FC<TokenIconProps> = ({
+  size = 6,
+  className,
+  ...props
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 200 200"
       width="200"
       height="200"
-      className="w-5 h-5"
+      className={`w-${size} h-${size} ${className}`}
       {...props}
     >
       {/* Background circle with gradient */}
