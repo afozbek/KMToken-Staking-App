@@ -1,29 +1,49 @@
 import React from "react";
 
-const LoadingIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => {
+interface LoadingIconProps extends React.SVGProps<SVGSVGElement> {
+  color?: string;
+}
+
+const LoadingIcon: React.FC<LoadingIconProps> = ({
+  color = "currentColor",
+  className,
+  ...props
+}) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="100"
       height="100"
-      viewBox="0 0 50 50"
-      className="w-4 h-4 mx-auto"
+      viewBox="0 0 24 24"
+      className={`w-4 h-4 ${className || ""}`}
+      {...props}
     >
       <circle
-        cx="25"
-        cy="25"
-        r="20"
+        className="opacity-25"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke={color}
+        strokeWidth="4"
         fill="none"
-        stroke="#0078d7"
-        stroke-width="4"
-        stroke-linecap="round"
+      />
+      <circle
+        className="opacity-75"
+        cx="12"
+        cy="12"
+        r="10"
+        stroke={color}
+        strokeWidth="4"
+        fill="none"
+        strokeDasharray="30 150"
       >
         <animateTransform
           attributeName="transform"
+          attributeType="XML"
           type="rotate"
-          from="0 25 25"
-          to="360 25 25"
-          dur="1s"
+          from="0 12 12"
+          to="360 12 12"
+          dur="0.8s"
           repeatCount="indefinite"
         />
       </circle>

@@ -21,7 +21,7 @@ const StakeButton = ({
       disabled={disabled || loading}
       onClick={onClick}
     >
-      {loading ? <LoadingIcon className="w-5 h-5" /> : btnText}
+      {loading ? <LoadingIcon /> : btnText}
     </button>
   );
 };
