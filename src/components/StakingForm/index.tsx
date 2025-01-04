@@ -130,48 +130,50 @@ const StakingForm = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl p-6 max-w-md mx-auto font-fontTomorrow mt-10">
-      <div className="text-center mb-6">
-        <h2 className="text-xl font-semibold mb-2">Stake {tokenSymbol}</h2>
-        <p className="text-gray-600">
-          Stake {tokenSymbol} and receive d{tokenSymbol} while staking
-        </p>
+    <div className="p-5 lg:p-0">
+      <div className="bg-white rounded-xl p-6 max-w-md mx-auto font-fontTomorrow mt-10">
+        <div className="text-center mb-6">
+          <h2 className="text-xl font-semibold mb-2">Stake {tokenSymbol}</h2>
+          <p className="text-gray-600">
+            Stake {tokenSymbol} and receive d{tokenSymbol} while staking
+          </p>
+        </div>
+
+        <TabButtons selectedTab={selectedTab} onTabChange={setSelectedTab} />
+
+        <StakeInput
+          amount={amount}
+          onAmountChange={setAmount}
+          onMaxClick={handleMaxClick}
+        />
+
+        {/* Balance Display */}
+        <div className="mb-4 text-sm text-gray-600">
+          {selectedTab === TabType.Stake ? (
+            <div>
+              Available: {tokenBalance.formattedBalance} {tokenSymbol}
+            </div>
+          ) : (
+            <div>
+              Staked: {stakedAmount.formattedAmount} {tokenSymbol}
+            </div>
+          )}
+        </div>
+
+        <TransactionDetails />
+
+        <TermsCheckbox
+          isAccepted={isTermsAccepted}
+          onAcceptChange={setIsTermsAccepted}
+        />
+
+        <StakeButton
+          disabled={!isTermsAccepted || !amount || !signer}
+          onClick={handleFormAction}
+          loading={isLoading}
+          btnText={selectedTab === TabType.Stake ? "Stake" : "Unstake"}
+        />
       </div>
-
-      <TabButtons selectedTab={selectedTab} onTabChange={setSelectedTab} />
-
-      <StakeInput
-        amount={amount}
-        onAmountChange={setAmount}
-        onMaxClick={handleMaxClick}
-      />
-
-      {/* Balance Display */}
-      <div className="mb-4 text-sm text-gray-600">
-        {selectedTab === TabType.Stake ? (
-          <div>
-            Available: {tokenBalance.formattedBalance} {tokenSymbol}
-          </div>
-        ) : (
-          <div>
-            Staked: {stakedAmount.formattedAmount} {tokenSymbol}
-          </div>
-        )}
-      </div>
-
-      <TransactionDetails />
-
-      <TermsCheckbox
-        isAccepted={isTermsAccepted}
-        onAcceptChange={setIsTermsAccepted}
-      />
-
-      <StakeButton
-        disabled={!isTermsAccepted || !amount || !signer}
-        onClick={handleFormAction}
-        loading={isLoading}
-        btnText={selectedTab === TabType.Stake ? "Stake" : "Unstake"}
-      />
     </div>
   );
 };

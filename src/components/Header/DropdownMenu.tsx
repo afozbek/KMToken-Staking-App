@@ -1,4 +1,5 @@
 import { forwardRef } from "react";
+import { copyText } from "../utils";
 
 interface Props {
   address: string;
@@ -12,9 +13,14 @@ const DropdownMenu = forwardRef<HTMLDivElement, Props>(
         ref={ref}
         className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg py-2"
       >
-        <div className="px-4 py-2 text-sm text-gray-500 break-all border-b border-gray-100">
-          {address}
-        </div>
+        <button
+          className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          onClick={() => {
+            copyText(address);
+          }}
+        >
+          Copy Address
+        </button>
         <button
           onClick={() => setShowMenu(false)}
           className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
