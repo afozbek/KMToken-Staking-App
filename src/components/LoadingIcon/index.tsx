@@ -2,10 +2,12 @@ import React from "react";
 
 interface LoadingIconProps extends React.SVGProps<SVGSVGElement> {
   color?: string;
+  size?: number;
 }
 
 const LoadingIcon: React.FC<LoadingIconProps> = ({
   color = "currentColor",
+  size = 4,
   className,
   ...props
 }) => {
@@ -15,7 +17,7 @@ const LoadingIcon: React.FC<LoadingIconProps> = ({
       width="100"
       height="100"
       viewBox="0 0 24 24"
-      className={`w-4 h-4 ${className || ""}`}
+      className={`w-${size} h-${size} ${className || ""}`}
       {...props}
     >
       <circle
