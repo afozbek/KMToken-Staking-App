@@ -1,9 +1,14 @@
 "use client";
 
-import { useWalletConnector } from "@/app/hooks/useWalletConnector";
+import { baseSepolia } from "viem/op-stack";
+import { injected, useConnect } from "wagmi";
 
 export default function ConnectBtn() {
-  const { connectAccount } = useWalletConnector();
+  const { connect } = useConnect();
+
+  const connectAccount = async () => {
+    await connect({ connector: injected(), chainId: baseSepolia.id });
+  };
 
   return (
     <button

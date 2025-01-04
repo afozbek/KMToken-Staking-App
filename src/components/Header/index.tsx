@@ -1,12 +1,12 @@
 "use client";
 import ConnectBtn from "./ConnectBtn";
-import { useWalletConnector } from "@/app/hooks/useWalletConnector";
 import { useRef, useState } from "react";
 import { useClickOutside } from "@/app/hooks/useClickOutside";
 import DropdownMenu from "./DropdownMenu";
+import { useAccount } from "wagmi";
 
 export default function Header() {
-  const { account } = useWalletConnector();
+  const { address } = useAccount();
   const [showMenu, setShowMenu] = useState(false);
 
   const menuRef = useRef<HTMLElement | any>(null);
@@ -16,7 +16,7 @@ export default function Header() {
   });
 
   const renderConnectPart = () => {
-    if (account) {
+    if (address) {
       return (
         <>
           <button
@@ -26,12 +26,12 @@ export default function Header() {
             }}
           >
             <span className="mr-1">Connected with: </span>
-            <div className="max-w-[200px] truncate">{account}</div>
+            <div className="max-w-[200px] truncate">{address}</div>
           </button>
 
           {showMenu && (
             <DropdownMenu
-              account={account}
+              address={address}
               setShowMenu={setShowMenu}
               ref={menuRef} // we can add ref to components with new React
             />
@@ -40,7 +40,7 @@ export default function Header() {
       );
     }
 
-    // show connect if account not connected
+    // show connect if address not connected
     return <ConnectBtn />;
   };
 

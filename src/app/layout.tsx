@@ -5,7 +5,6 @@ import { cookieToInitialState } from "wagmi";
 import { config } from "../wagmi/config";
 import { headers } from "next/headers";
 import { WagmiProviders } from "../wagmi/Provider";
-import { WalletConnectorProvider } from "./context/walletContext";
 import DefaultLayout from "@/layouts/DefaultLayout";
 
 const geistSans = Geist({
@@ -43,9 +42,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${fontTomorrow.variable} antialiased`}
       >
         <WagmiProviders initialState={initialState}>
-          <WalletConnectorProvider>
-            <DefaultLayout>{children}</DefaultLayout>
-          </WalletConnectorProvider>
+          <DefaultLayout>{children}</DefaultLayout>
         </WagmiProviders>
       </body>
     </html>

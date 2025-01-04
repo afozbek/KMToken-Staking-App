@@ -1,17 +1,27 @@
 import React from "react";
 import { copyText } from "../../utils";
 import { useDisconnect } from "wagmi";
+import { config } from "@/wagmi/config";
+import { getAccount } from "wagmi/actions";
 
 interface Props {
-  account: string;
+  address: string;
   setShowMenu: (show: boolean) => void;
   ref: React.RefObject<any>;
 }
 
-const DropdownMenu = ({ account, setShowMenu, ref: menuRef }: Props) => {
-  // const { disconnectAccount } = useWalletConnector();
+const DropdownMenu = ({ address, setShowMenu, ref: menuRef }: Props) => {
   const { disconnect } = useDisconnect();
 
+  const disconnectAccount = async () => {
+    try {
+      // gets the current connector
+      const { connector } = getAccount(config);
+      await disconnect({ connector });
+    } catch (err) {
+      console.log({ err });
+    }
+  };
   return (
     <div
       ref={menuRef}
@@ -20,7 +30,7 @@ const DropdownMenu = ({ account, setShowMenu, ref: menuRef }: Props) => {
       <button
         className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
         onClick={() => {
-          copyText(account);
+          copyText(address);
           setShowMenu(false);
         }}
       >
@@ -30,7 +40,7 @@ const DropdownMenu = ({ account, setShowMenu, ref: menuRef }: Props) => {
       <button
         className="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
         onClick={() => {
-          disconnect();
+          disconnectAccount();
           setShowMenu(false);
         }}
       >

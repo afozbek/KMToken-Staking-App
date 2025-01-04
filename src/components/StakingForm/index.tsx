@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { useBalance, useAccount, useReadContracts } from "wagmi";
+import { useAccount, useReadContracts } from "wagmi";
 import { formatEther } from "viem";
 import TabButtons from "./TabButtons";
 import StakeInput from "./StakeInput";
