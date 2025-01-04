@@ -1,5 +1,8 @@
 import { forwardRef } from "react";
 import { copyText } from "../utils";
+import { getAccount } from "wagmi/actions";
+import { config } from "@/wagmi/config";
+import { useDisconnect } from "wagmi";
 
 interface Props {
   address: string;
@@ -8,6 +11,20 @@ interface Props {
 
 const DropdownMenu = forwardRef<HTMLDivElement, Props>(
   ({ address, setShowMenu }, ref) => {
+    const { disconnect } = useDisconnect();
+
+    const disconnectAccount = async () => {
+      try {
+        // gets the current connector
+        const { connector } = getAccount(config);
+
+        await disconnect({ connector });
+        setShowMenu(false);
+      } catch (err) {
+        console.log({ err });
+      }
+    };
+
     return (
       <div
         ref={ref}
@@ -22,7 +39,7 @@ const DropdownMenu = forwardRef<HTMLDivElement, Props>(
           Copy Address
         </button>
         <button
-          onClick={() => setShowMenu(false)}
+          onClick={disconnectAccount}
           className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
         >
           Disconnect

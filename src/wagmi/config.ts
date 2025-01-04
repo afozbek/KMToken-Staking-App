@@ -7,4 +7,5 @@ export const config = createConfig({
     [baseSepolia.id]: http(),
   },
   connectors: [injected()],
+  ssr: true,
 });
