@@ -16,6 +16,7 @@ import {
   getStakedAmount,
 } from "@/blockchain";
 import { formatBalance, tokenSymbol } from "@/blockchain/utils";
+import { JsonRpcSigner } from "ethers";
 
 const StakingForm = () => {
   const [selectedTab, setSelectedTab] = useState<TabType>(TabType.Stake);
@@ -51,16 +52,8 @@ const StakingForm = () => {
   useEffect(() => {
     if (!signer) return;
 
-    const fetchStakedAmount = async () => {
-      const amount = await getStakedAmount(signer);
-      setStakedAmount({
-        amount,
-        formattedAmount: formatBalance(amount),
-      });
-    };
-
     if (selectedTab === TabType.Unstake) {
-      fetchStakedAmount();
+      fetchStakedAmount(signer);
     }
   }, [signer, selectedTab]);
 
@@ -77,10 +70,10 @@ const StakingForm = () => {
       console.log({ hash });
       alert(`Successfully staked. TxHash: ${hash}`);
       setAmount("");
+      fetchStakedAmount(signer); // update staked amount
     } catch (err: any) {
-      console.error(err);
       if (err.message === "APPROVE_REQUIRED") {
-        setSelectedTab(TabType.Approve);
+        handleApprove();
       }
     } finally {
       setLoading(false);
@@ -118,8 +111,26 @@ const StakingForm = () => {
     }
   };
 
+  const fetchStakedAmount = async (signer: JsonRpcSigner) => {
+    const amount = await getStakedAmount(signer);
+    setStakedAmount({
+      amount,
+      formattedAmount: formatBalance(amount),
+    });
+  };
+
+  const handleFormAction = () => {
+    if (selectedTab === TabType.Stake) {
+      handleStake();
+    } else if (selectedTab === TabType.Unstake) {
+      handleUnstake();
+    } else {
+      console.log("TODO: Wrong tab selected");
+    }
+  };
+
   return (
-    <div className="bg-white rounded-xl p-6 max-w-md mx-auto font-fontTomorrow">
+    <div className="bg-white rounded-xl p-6 max-w-md mx-auto font-fontTomorrow mt-10">
       <div className="text-center mb-6">
         <h2 className="text-xl font-semibold mb-2">Stake {tokenSymbol}</h2>
         <p className="text-gray-600">
@@ -157,14 +168,9 @@ const StakingForm = () => {
 
       <StakeButton
         disabled={!isTermsAccepted || !amount || !signer}
-        onClick={
-          selectedTab === TabType.Stake
-            ? handleStake
-            : selectedTab === TabType.Unstake
-            ? handleUnstake
-            : handleApprove
-        }
+        onClick={handleFormAction}
         loading={isLoading}
+        btnText={selectedTab === TabType.Stake ? "Stake" : "Unstake"}
       />
     </div>
   );

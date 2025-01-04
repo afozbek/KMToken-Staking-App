@@ -16,7 +16,7 @@ const StakeInput = ({
       <label className="block text-gray-700 mb-2">Amount</label>
       <div className="relative">
         <div className="absolute left-3 top-1/2 -translate-y-1/2">
-          <TokenIcon size={24} />
+          <TokenIcon />
         </div>
         <input
           type="number"

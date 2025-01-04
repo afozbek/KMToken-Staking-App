@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
-  <circle cx="100" cy="100" r="90" fill="gold" stroke="black" stroke-width="4" />
-  <circle cx="100" cy="100" r="70" fill="silver" />
-  <text x="50%" y="50%" text-anchor="middle" fill="black" font-size="20" font-family="Arial" dy=".3em">
-    Stake
-  </text>
-  <circle cx="100" cy="100" r="40" fill="none" stroke="blue" stroke-width="6" />
-</svg>
