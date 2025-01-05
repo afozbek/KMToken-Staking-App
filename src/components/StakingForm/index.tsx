@@ -39,6 +39,7 @@ const StakingForm = () => {
     amount: "0",
     formattedAmount: "0",
   });
+  const [error, setError] = useState("");
 
   const signer = useEthersSigner();
   const toast = useToast();
@@ -84,7 +85,8 @@ const StakingForm = () => {
       fetchStakedAmount(signer);
     } catch (err: any) {
       if (err.message === "APPROVE_REQUIRED") {
-        handleApprove();
+        toast.error("You need to approve the tokens first");
+        setError(err.message);
       } else {
         toast.error(err.message || "Failed to stake tokens");
       }
@@ -101,6 +103,7 @@ const StakingForm = () => {
       const hash = await unstakeTx(signer);
       console.log({ hash });
       toast.success(`Successfully unstaked. TxHash: ${hash}`);
+      setError("");
     } catch (err: any) {
       toast.error(err.message || "Failed to unstake tokens");
       console.error(err);
@@ -117,11 +120,12 @@ const StakingForm = () => {
       const hash = await approveTx(amount, signer);
       console.log({ hash });
       toast.success(`Successfully approved. TxHash: ${hash}`);
-      setSelectedTab(TabType.Stake);
+
+      // we always approve during stake
+      await handleStake();
     } catch (err: any) {
       toast.error(err.message || "Failed to approve tokens");
       console.error(err);
-    } finally {
       setLoading(false);
     }
   };
@@ -136,7 +140,11 @@ const StakingForm = () => {
 
   const handleFormAction = () => {
     if (selectedTab === TabType.Stake) {
-      handleStake();
+      if (error && error === "APPROVE_REQUIRED") {
+        handleApprove();
+      } else {
+        handleStake();
+      }
     } else if (selectedTab === TabType.Unstake) {
       handleUnstake();
     } else {
@@ -186,7 +194,13 @@ const StakingForm = () => {
           disabled={!isTermsAccepted || !amount || !signer}
           onClick={handleFormAction}
           loading={isLoading}
-          btnText={selectedTab === TabType.Stake ? "Stake" : "Unstake"}
+          btnText={
+            selectedTab === TabType.Stake
+              ? error && error === "APPROVE_REQUIRED"
+                ? "Approve & Stake"
+                : "Stake"
+              : "Unstake"
+          }
         />
       </div>
     </div>

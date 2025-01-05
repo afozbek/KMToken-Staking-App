@@ -117,7 +117,11 @@ export const stakeTx = async (amount: string, signer: JsonRpcSigner) => {
 };
 
 export const unstakeTx = async (signer: JsonRpcSigner) => {
-  const stakingContract = new Contract(STAKING_CONTRACT_ADDRESS, StakingAbi);
+  const stakingContract = new Contract(
+    STAKING_CONTRACT_ADDRESS,
+    StakingAbi,
+    signer
+  );
 
   const rawTx = await stakingContract.withdraw.populateTransaction();
 
