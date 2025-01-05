@@ -1,8 +1,8 @@
 import { forwardRef } from "react";
-import { copyText } from "../utils";
 import { getAccount } from "wagmi/actions";
 import { config } from "@/wagmi/config";
 import { useDisconnect } from "wagmi";
+import { useCopyToClipboard } from "@/app/hooks/useCopyToClipboard";
 
 interface Props {
   address: string;
@@ -12,6 +12,8 @@ interface Props {
 const DropdownMenu = forwardRef<HTMLDivElement, Props>(
   ({ address, setShowMenu }, ref) => {
     const { disconnect } = useDisconnect();
+
+    const copyToClipboard = useCopyToClipboard();
 
     const disconnectAccount = async () => {
       try {
@@ -33,7 +35,7 @@ const DropdownMenu = forwardRef<HTMLDivElement, Props>(
         <button
           className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
           onClick={() => {
-            copyText(address);
+            copyToClipboard(address);
           }}
         >
           Copy Address

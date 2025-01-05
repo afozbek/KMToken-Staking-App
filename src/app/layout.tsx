@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Tomorrow } from "next/font/google";
 import "./globals.css";
 import { WagmiProviders } from "../wagmi/Provider";
 import DefaultLayout from "@/layouts/DefaultLayout";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,6 +38,7 @@ export default function RootLayout({
       >
         <WagmiProviders>
           <DefaultLayout>{children}</DefaultLayout>
+          <Toaster position="top-center" />
         </WagmiProviders>
       </body>
     </html>

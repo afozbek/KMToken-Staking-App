@@ -6,6 +6,7 @@ import StakeInput from "./StakeInput";
 import TransactionDetails from "./TransactionDetails";
 import TermsCheckbox from "./TermsCheckbox";
 import StakeButton from "./StakeButton";
+import { useToast } from "@/app/hooks/useToast";
 
 import { useEthersSigner } from "@/app/hooks/wagmi/utils";
 import {
@@ -40,7 +41,9 @@ const StakingForm = () => {
   });
 
   const signer = useEthersSigner();
+  const toast = useToast();
 
+  // Fetch token balance
   useEffect(() => {
     if (!signer) return;
 
@@ -56,6 +59,7 @@ const StakingForm = () => {
     getKommunityTokenBalance();
   }, [signer]);
 
+  // Fetch staked amount when unstake tab is selected
   useEffect(() => {
     if (!signer) return;
 
@@ -75,12 +79,14 @@ const StakingForm = () => {
     try {
       const hash = await stakeTx(amount, signer);
       console.log({ hash });
-      alert(`Successfully staked. TxHash: ${hash}`);
+      toast.success(`Successfully staked. TxHash: ${hash}`);
       setAmount("");
-      fetchStakedAmount(signer); // update staked amount
+      fetchStakedAmount(signer);
     } catch (err: any) {
       if (err.message === "APPROVE_REQUIRED") {
         handleApprove();
+      } else {
+        toast.error(err.message || "Failed to stake tokens");
       }
     } finally {
       setLoading(false);
@@ -94,8 +100,9 @@ const StakingForm = () => {
     try {
       const hash = await unstakeTx(signer);
       console.log({ hash });
-      alert(`Successfully unstaked. TxHash: ${hash}`);
-    } catch (err) {
+      toast.success(`Successfully unstaked. TxHash: ${hash}`);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to unstake tokens");
       console.error(err);
     } finally {
       setLoading(false);
@@ -109,9 +116,10 @@ const StakingForm = () => {
     try {
       const hash = await approveTx(amount, signer);
       console.log({ hash });
-      alert(`Successfully approved. TxHash: ${hash}`);
+      toast.success(`Successfully approved. TxHash: ${hash}`);
       setSelectedTab(TabType.Stake);
-    } catch (err) {
+    } catch (err: any) {
+      toast.error(err.message || "Failed to approve tokens");
       console.error(err);
     } finally {
       setLoading(false);
