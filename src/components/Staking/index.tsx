@@ -6,9 +6,11 @@ import { useAccount } from "wagmi";
 import StakingConnectCTA from "./StakingConnectCTA";
 
 const StakingContainer = () => {
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
 
-  return <>{address ? <StakingForm /> : <StakingConnectCTA />}</>;
+  return (
+    <>{address && isConnected ? <StakingForm /> : <StakingConnectCTA />}</>
+  );
 };
 
 export default StakingContainer;
