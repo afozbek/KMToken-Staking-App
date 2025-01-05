@@ -11,7 +11,7 @@ import MobileMenu from "./MobileMenu";
 import ConnectPart from "./ConnectPart";
 
 export default function Header() {
-  const { address } = useAccount();
+  const { address, isConnected } = useAccount();
   const [showMenu, setShowMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -71,6 +71,7 @@ export default function Header() {
         <ConnectPart
           ref={menuRef}
           address={address}
+          connected={isConnected}
           balance={balance.formatted}
           showMenu={showMenu}
           setShowMenu={setShowMenu}

@@ -6,6 +6,7 @@ import DropdownMenu from "./DropdownMenu";
 
 interface ConnectPartProps {
   address?: string;
+  connected: boolean;
   balance?: string;
   onMenuToggle: () => void;
   showMenu: boolean;
@@ -13,8 +14,11 @@ interface ConnectPartProps {
 }
 
 const ConnectPart = React.forwardRef<HTMLDivElement, ConnectPartProps>(
-  ({ address, balance, onMenuToggle, showMenu, setShowMenu }, ref) => {
-    if (!address) {
+  (
+    { address, connected, balance, onMenuToggle, showMenu, setShowMenu },
+    ref
+  ) => {
+    if (!address || !connected) {
       return <ConnectBtn />;
     }
 

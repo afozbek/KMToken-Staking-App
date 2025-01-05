@@ -3,7 +3,10 @@ import { JsonRpcSigner } from "ethers";
 import { BrowserProvider } from "ethers";
 import { useMemo } from "react";
 import { Account, Chain, Client } from "viem";
-import { useConnectorClient, Transport, Config } from "wagmi";
+import { useConnectorClient, Transport, Config, useConnect } from "wagmi";
+import { metaMask } from "wagmi/connectors";
+import { useToast } from "../useToast";
+import { baseSepolia } from "viem/op-stack";
 
 /** Hook to convert a viem Wallet Client to an ethers.js Signer. */
 export function useEthersSigner({ chainId }: { chainId?: number } = {}) {
@@ -25,4 +28,19 @@ export function _clientToSigner(client: Client<Transport, Chain, Account>) {
   const provider = new BrowserProvider(transport, network);
   const signer = new JsonRpcSigner(provider, account.address);
   return signer;
+}
+
+export function useClientConnect() {
+  const { connect } = useConnect();
+  const { error } = useToast();
+
+  const connectAccount = async () => {
+    try {
+      await connect({ connector: metaMask(), chainId: baseSepolia.id });
+    } catch (err) {
+      console.log(err);
+      error("Please install Metamask to connect your wallet");
+    }
+  };
+  return { connectAccount };
 }

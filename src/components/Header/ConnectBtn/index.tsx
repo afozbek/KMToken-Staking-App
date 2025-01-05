@@ -1,22 +1,9 @@
 "use client";
 
-import { useToast } from "@/app/hooks/useToast";
-import { baseSepolia } from "viem/chains";
-import { useConnect } from "wagmi";
-import { metaMask } from "wagmi/connectors";
+import { useClientConnect } from "@/app/hooks/wagmi/utils";
 
 export default function ConnectBtn() {
-  const { connect } = useConnect();
-  const { error } = useToast();
-
-  const connectAccount = async () => {
-    try {
-      await connect({ connector: metaMask(), chainId: baseSepolia.id });
-    } catch (err) {
-      console.log(err);
-      error("Please install Metamask to connect your wallet");
-    }
-  };
+  const { connectAccount } = useClientConnect();
 
   return (
     <button

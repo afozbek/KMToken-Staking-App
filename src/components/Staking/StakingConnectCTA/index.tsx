@@ -1,22 +1,9 @@
 import React from "react";
-import { useConnect } from "wagmi";
 import { tokenSymbol } from "@/blockchain/utils";
-import { metaMask } from "wagmi/connectors";
-import { baseSepolia } from "viem/op-stack";
-import { useToast } from "@/app/hooks/useToast";
+import { useClientConnect } from "@/app/hooks/wagmi/utils";
 
 const StakingConnectCTA = () => {
-  const { connect } = useConnect();
-  const { error } = useToast();
-
-  const connectAccount = async () => {
-    try {
-      await connect({ connector: metaMask(), chainId: baseSepolia.id });
-    } catch (err) {
-      console.log(err);
-      error("Please install Metamask to connect your wallet");
-    }
-  };
+  const { connectAccount } = useClientConnect();
 
   return (
     <div className="p-5 lg:p-0">
