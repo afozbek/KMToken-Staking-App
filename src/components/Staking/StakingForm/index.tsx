@@ -16,7 +16,11 @@ import {
   unstakeTx,
   getStakedAmount,
 } from "@/blockchain";
-import { formatBalance, tokenSymbol } from "@/blockchain/utils";
+import {
+  formatBalance,
+  formatBalanceToNumber,
+  tokenSymbol,
+} from "@/blockchain/utils";
 import { JsonRpcSigner } from "ethers";
 
 export enum TabType {
@@ -69,8 +73,16 @@ const StakingForm = () => {
     }
   }, [signer, selectedTab]);
 
+  useEffect(() => {
+    setAmount("");
+  }, [selectedTab]);
+
   const handleMaxClick = () => {
-    console.log("TODO: Handle MAX CLICK");
+    const amount = formatBalanceToNumber(
+      selectedTab === TabType.Stake ? tokenBalance.balance : stakedAmount.amount
+    );
+
+    setAmount(amount.toString());
   };
 
   const handleStake = async () => {

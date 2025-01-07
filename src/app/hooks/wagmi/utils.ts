@@ -15,6 +15,7 @@ import { useToast } from "../useToast";
 import { baseSepolia } from "viem/op-stack";
 import { getAccount } from "wagmi/actions";
 import { config } from "@/wagmi/config";
+import { useMediaQuery } from "../useMediaQuery";
 
 /** Hook to convert a viem Wallet Client to an ethers.js Signer. */
 export function useEthersSigner({ chainId }: { chainId?: number } = {}) {
@@ -41,6 +42,9 @@ export function _clientToSigner(client: Client<Transport, Chain, Account>) {
 export function useClientConnect() {
   const { connect } = useConnect();
   const { error } = useToast();
+  const isMobile = useMediaQuery("(max-width: 546px)");
+
+  console.log(isMobile);
 
   const connectAccount = async () => {
     try {

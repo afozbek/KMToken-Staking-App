@@ -25,7 +25,7 @@ const StakeInput = ({
           className="w-full pl-12 pr-20 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           placeholder="0.0"
           min="0"
-          step="0.000000000000000001"
+          step="0.1"
         />
         <button
           onClick={onMaxClick}

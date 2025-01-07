@@ -19,3 +19,9 @@ export const formatBalance = (balance: string) => {
 
   return numberWithCommas(balanceFormatted);
 };
+
+export const formatBalanceToNumber = (balance: string) => {
+  const balanceFormatted = Number(formatEther(balance));
+
+  return Math.floor(balanceFormatted);
+};
