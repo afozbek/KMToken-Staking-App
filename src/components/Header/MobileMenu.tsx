@@ -1,7 +1,8 @@
 import { X } from "lucide-react";
 import TokenIcon from "../icons/TokenIcon";
-import { navLinks } from "./Navigation";
+import { navLinks, NavLinkType } from "./Navigation";
 import React from "react";
+import { useClientDisconnect } from "@/app/hooks/wagmi/utils";
 
 interface MobileMenuProps {
   onClose: () => void;
@@ -11,6 +12,15 @@ interface MobileMenuProps {
 
 const MobileMenu = React.forwardRef<HTMLDivElement, MobileMenuProps>(
   ({ onClose, address, balance }, ref) => {
+    const { disconnectAccount } = useClientDisconnect();
+
+    const handleLinkClick = (id: string) => {
+      if (id === NavLinkType.LOGOUT) {
+        disconnectAccount();
+        onClose();
+      }
+    };
+
     return (
       <div ref={ref} className="fixed inset-0 z-50 bg-white lg:hidden">
         <div className="p-4">
@@ -24,13 +34,27 @@ const MobileMenu = React.forwardRef<HTMLDivElement, MobileMenuProps>(
             </button>
           </div>
 
-          <nav className="mb-8">
+          {address && (
+            <div className="p-4 bg-gray-50 rounded-lg mb-8">
+              <div className="flex items-center gap-2 mb-4">
+                <TokenIcon />
+                <span className="font-medium">{balance} ETH</span>
+              </div>
+              <div className="text-sm text-gray-500 break-all">{address}</div>
+            </div>
+          )}
+
+          <nav className="mb-4">
             <ul className="space-y-6">
               {navLinks.map((link) => (
-                <li key={link.name}>
+                <li key={link.name} onClick={() => handleLinkClick(link.id)}>
                   <a
                     href="#"
-                    className="flex items-center gap-3 text-lg text-gray-600 hover:text-gray-900 transition-colors"
+                    className={`flex items-center gap-3 text-lg  transition-colors ${
+                      link.id === NavLinkType.LOGOUT
+                        ? "text-red-600 hover:text-red-700"
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
                   >
                     <span>{link.icon}</span>
                     {link.name}
@@ -39,16 +63,6 @@ const MobileMenu = React.forwardRef<HTMLDivElement, MobileMenuProps>(
               ))}
             </ul>
           </nav>
-
-          {address && (
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-center gap-2 mb-4">
-                <TokenIcon />
-                <span className="font-medium">{balance} ETH</span>
-              </div>
-              <div className="text-sm text-gray-500 break-all">{address}</div>
-            </div>
-          )}
         </div>
       </div>
     );

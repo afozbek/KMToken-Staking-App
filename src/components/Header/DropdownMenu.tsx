@@ -1,8 +1,6 @@
 import { forwardRef } from "react";
-import { getAccount } from "wagmi/actions";
-import { config } from "@/wagmi/config";
-import { useDisconnect } from "wagmi";
 import { useCopyToClipboard } from "@/app/hooks/useCopyToClipboard";
+import { useClientDisconnect } from "@/app/hooks/wagmi/utils";
 
 interface Props {
   address: string;
@@ -11,16 +9,13 @@ interface Props {
 
 const DropdownMenu = forwardRef<HTMLDivElement, Props>(
   ({ address, setShowMenu }, ref) => {
-    const { disconnect } = useDisconnect();
+    const { disconnectAccount } = useClientDisconnect();
 
     const copyToClipboard = useCopyToClipboard();
 
-    const disconnectAccount = async () => {
+    const handleDisconnect = async () => {
       try {
-        // gets the current connector
-        const { connector } = getAccount(config);
-
-        await disconnect({ connector });
+        await disconnectAccount();
         setShowMenu(false);
       } catch (err) {
         console.log({ err });
@@ -41,7 +36,7 @@ const DropdownMenu = forwardRef<HTMLDivElement, Props>(
           Copy Address
         </button>
         <button
-          onClick={disconnectAccount}
+          onClick={handleDisconnect}
           className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
         >
           Disconnect

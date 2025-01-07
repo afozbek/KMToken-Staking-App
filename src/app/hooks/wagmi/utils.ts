@@ -3,10 +3,18 @@ import { JsonRpcSigner } from "ethers";
 import { BrowserProvider } from "ethers";
 import { useMemo } from "react";
 import { Account, Chain, Client } from "viem";
-import { useConnectorClient, Transport, Config, useConnect } from "wagmi";
+import {
+  useConnectorClient,
+  Transport,
+  Config,
+  useConnect,
+  useDisconnect,
+} from "wagmi";
 import { metaMask } from "wagmi/connectors";
 import { useToast } from "../useToast";
 import { baseSepolia } from "viem/op-stack";
+import { getAccount } from "wagmi/actions";
+import { config } from "@/wagmi/config";
 
 /** Hook to convert a viem Wallet Client to an ethers.js Signer. */
 export function useEthersSigner({ chainId }: { chainId?: number } = {}) {
@@ -43,4 +51,21 @@ export function useClientConnect() {
     }
   };
   return { connectAccount };
+}
+
+export function useClientDisconnect() {
+  const { disconnect } = useDisconnect();
+
+  const disconnectAccount = async () => {
+    try {
+      // gets the current connector
+      const { connector } = getAccount(config);
+
+      await disconnect({ connector });
+    } catch (err) {
+      console.log({ err });
+    }
+  };
+
+  return { disconnectAccount };
 }
