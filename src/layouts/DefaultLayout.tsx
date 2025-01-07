@@ -6,11 +6,13 @@ export default function DefaultLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="main-layout">
+    <div className="min-h-screen flex flex-col ">
       <Header />
-      <div className="h-screen">{children}</div>
+
+      <div className="mb-6">{children}</div>
+
       {/* Copyright to Dribble */}
-      <footer className="text-center text-gray-500 text-sm mt-10">
+      <footer className="text-center text-gray-500 text-sm mb-10">
         Design fetched from{" "}
         <a
           className="text-blue-500"

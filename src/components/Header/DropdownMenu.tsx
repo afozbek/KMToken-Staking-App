@@ -1,6 +1,7 @@
-import { forwardRef } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { useCopyToClipboard } from "@/app/hooks/useCopyToClipboard";
-import { useClientDisconnect } from "@/app/hooks/wagmi/utils";
+import { useClientDisconnect, useEthersSigner } from "@/app/hooks/wagmi/utils";
+import { claimTokensTx, isFaucetEnabled } from "@/blockchain";
 
 interface Props {
   address: string;
@@ -9,14 +10,38 @@ interface Props {
 
 const DropdownMenu = forwardRef<HTMLDivElement, Props>(
   ({ address, setShowMenu }, ref) => {
+    const [faucetEnabled, setIsFaucetEnabled] = useState(true);
+
+    const signer = useEthersSigner();
+
     const { disconnectAccount } = useClientDisconnect();
 
     const copyToClipboard = useCopyToClipboard();
+
+    useEffect(() => {
+      if (signer) {
+        isFaucetEnabled(signer).then((enabled) => {
+          setIsFaucetEnabled(enabled);
+        });
+      }
+    }, [signer]);
 
     const handleDisconnect = async () => {
       try {
         await disconnectAccount();
         setShowMenu(false);
+      } catch (err) {
+        console.log({ err });
+      }
+    };
+
+    const handleClaimFaucet = async () => {
+      console.log("Claiming faucet");
+
+      if (!signer) return;
+      try {
+        await claimTokensTx(signer);
+        setIsFaucetEnabled(false);
       } catch (err) {
         console.log({ err });
       }
@@ -34,6 +59,18 @@ const DropdownMenu = forwardRef<HTMLDivElement, Props>(
           }}
         >
           Copy Address
+        </button>
+
+        <button
+          className={`w-full text-left px-4 py-2 text-sm text-green-500 hover:bg-green-100 ${
+            !faucetEnabled ? "cursor-not-allowed" : ""
+          }`}
+          onClick={() => {
+            handleClaimFaucet();
+          }}
+          disabled={!faucetEnabled}
+        >
+          Claim Tokens
         </button>
         <button
           onClick={handleDisconnect}

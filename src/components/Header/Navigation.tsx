@@ -20,7 +20,7 @@ const Navigation: FC<{ className?: string }> = ({ className = "" }) => {
   return (
     <nav className={className}>
       <ul className="flex items-center gap-8">
-        {navLinks.map((link) => (
+        {navLinks.filter((link) => link.id !== NavLinkType.LOGOUT).map((link) => (
           <li key={link.id}>
             <a
               href="#"
