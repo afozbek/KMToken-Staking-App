@@ -5,12 +5,12 @@ const TransactionDetails = () => {
 
       <div className="flex justify-between text-gray-600">
         <span>You will recieve</span>
-        <span>3.82 dETH</span>
+        <span>3.82 dKMT</span>
       </div>
 
       <div className="flex justify-between text-gray-600">
         <span>Exchange rate</span>
-        <span>1 ETH = 1 dETH</span>
+        <span>1 KMT = 1 dKMT</span>
       </div>
 
       <div className="flex justify-between text-gray-600">

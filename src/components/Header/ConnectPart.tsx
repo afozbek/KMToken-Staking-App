@@ -3,6 +3,7 @@ import Image from "next/image";
 import TokenIcon from "../icons/TokenIcon";
 import ConnectBtn from "./ConnectBtn";
 import DropdownMenu from "./DropdownMenu";
+import { tokenSymbol } from "@/blockchain/utils";
 
 interface ConnectPartProps {
   address?: string;
@@ -26,7 +27,9 @@ const ConnectPart = React.forwardRef<HTMLDivElement, ConnectPartProps>(
       <div className="flex items-center gap-4 relative">
         <div className="hidden sm:flex items-center gap-2">
           <TokenIcon />
-          <span className="font-medium">{balance} ETH</span>
+          <span className="font-medium">
+            {balance} {tokenSymbol}
+          </span>
         </div>
         <button
           className="flex items-center gap-2 bg-gray-100 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
