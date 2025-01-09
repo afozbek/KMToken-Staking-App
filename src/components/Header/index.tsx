@@ -23,7 +23,7 @@ export default function Header() {
   return (
     <header className="bg-white text-gray-800 flex justify-between items-center px-4 sm:px-6 py-4 shadow-sm font-fontTomorrow">
       <div className="flex items-center gap-12">
-        <h1 className="text-2xl text-blue-600 font-bold">Liquo</h1>
+        <h1 className="text-2xl text-blue-600 font-bold">KMToken</h1>
         <Navigation className="hidden lg:block" />
       </div>
 
