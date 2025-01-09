@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import TabButtons from "./TabButtons";
 import StakeInput from "./StakeInput";
 import TransactionDetails from "./TransactionDetails";
@@ -22,6 +22,7 @@ import {
   tokenSymbol,
 } from "@/blockchain/utils";
 import { JsonRpcSigner } from "ethers";
+import useFaucet from "@/app/hooks/useFaucet";
 
 export enum TabType {
   Faucet = "faucet",
@@ -29,6 +30,7 @@ export enum TabType {
   Unstake = "unstake",
   Approve = "approve",
 }
+const MAX_BALANCE_FOR_FAUCET = 10; // 10 Kommunity Tokens
 
 const StakingForm = () => {
   const [selectedTab, setSelectedTab] = useState<TabType>(TabType.Stake);
@@ -44,6 +46,8 @@ const StakingForm = () => {
     formattedAmount: "0",
   });
   const [error, setError] = useState("");
+
+  const { faucetLoading, claimTokens, faucetEnabled } = useFaucet();
 
   const signer = useEthersSigner();
   const toast = useToast();
@@ -164,6 +168,13 @@ const StakingForm = () => {
     }
   };
 
+  const isFaucetEnabledForUser = useMemo(() => {
+    return (
+      formatBalanceToNumber(tokenBalance.balance) < MAX_BALANCE_FOR_FAUCET &&
+      faucetEnabled
+    );
+  }, [tokenBalance.balance, faucetEnabled]);
+
   return (
     <div className="p-5 lg:p-0">
       <div className="bg-white rounded-xl p-6 max-w-md mx-auto font-fontTomorrow mt-10">
@@ -183,7 +194,7 @@ const StakingForm = () => {
         />
 
         {/* Balance Display */}
-        <div className="mb-4 text-sm text-gray-600">
+        <div className="mb-4 text-sm text-gray-600 flex justify-between">
           {selectedTab === TabType.Stake ? (
             <div>
               Available: {tokenBalance.formattedBalance} {tokenSymbol}
@@ -193,6 +204,20 @@ const StakingForm = () => {
               Staked: {stakedAmount.formattedAmount} {tokenSymbol}
             </div>
           )}
+
+          <>
+            {isFaucetEnabledForUser && (
+              <p className="text-gray-600">
+                <button
+                  className="text-blue-500 hover:underline"
+                  onClick={claimTokens}
+                  disabled={faucetLoading || !faucetEnabled}
+                >
+                  Low on balance?
+                </button>
+              </p>
+            )}
+          </>
         </div>
 
         <TransactionDetails />

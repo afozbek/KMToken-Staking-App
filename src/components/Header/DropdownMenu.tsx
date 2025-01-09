@@ -1,7 +1,7 @@
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef } from "react";
 import { useCopyToClipboard } from "@/app/hooks/useCopyToClipboard";
-import { useClientDisconnect, useEthersSigner } from "@/app/hooks/wagmi/utils";
-import { claimTokensTx, isFaucetEnabled } from "@/blockchain";
+import { useClientDisconnect } from "@/app/hooks/wagmi/utils";
+import useFaucet from "@/app/hooks/useFaucet";
 
 interface Props {
   address: string;
@@ -10,21 +10,11 @@ interface Props {
 
 const DropdownMenu = forwardRef<HTMLDivElement, Props>(
   ({ address, setShowMenu }, ref) => {
-    const [faucetEnabled, setIsFaucetEnabled] = useState(true);
-
-    const signer = useEthersSigner();
+    const { faucetEnabled, claimTokens } = useFaucet();
 
     const { disconnectAccount } = useClientDisconnect();
 
     const copyToClipboard = useCopyToClipboard();
-
-    useEffect(() => {
-      if (signer) {
-        isFaucetEnabled(signer).then((enabled) => {
-          setIsFaucetEnabled(enabled);
-        });
-      }
-    }, [signer]);
 
     const handleDisconnect = async () => {
       try {
@@ -36,12 +26,10 @@ const DropdownMenu = forwardRef<HTMLDivElement, Props>(
     };
 
     const handleClaimFaucet = async () => {
-      console.log("Claiming faucet");
-
-      if (!signer) return;
       try {
-        await claimTokensTx(signer);
-        setIsFaucetEnabled(false);
+        await claimTokens();
+
+        setShowMenu(false);
       } catch (err) {
         console.log({ err });
       }

@@ -43,8 +43,9 @@ export function useClientConnect() {
   const { connect } = useConnect();
   const { error } = useToast();
   const isMobile = useMediaQuery("(max-width: 546px)");
+  console.log({ isMobile });
 
-  console.log(isMobile);
+  // TODO: Add mobile wallet connect
 
   const connectAccount = async () => {
     try {
