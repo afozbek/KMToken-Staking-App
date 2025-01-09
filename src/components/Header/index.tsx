@@ -9,6 +9,7 @@ import { Menu } from "lucide-react";
 import Navigation from "./Navigation";
 import MobileMenu from "./MobileMenu";
 import ConnectPart from "./ConnectPart";
+import HeaderSkeleton from "./HeaderSkeleton";
 
 export default function Header() {
   const { address, isConnected } = useAccount();
@@ -16,6 +17,7 @@ export default function Header() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [balance, setBalance] = useState({ raw: "0", formatted: "0" });
+
   const menuRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const signer = useEthersSigner();
@@ -50,39 +52,34 @@ export default function Header() {
   });
 
   if (!mounted) {
-    return (
-      <header className="bg-white text-gray-800 flex justify-between items-center p-4 shadow-sm">
-        <h1 className="text-2xl text-blue-600 font-bold">Liquo</h1>
-        <div className="relative">
-          <div className="bg-gray-100 p-2 rounded-md">Loading...</div>
-        </div>
-      </header>
-    );
+    return <HeaderSkeleton />;
   }
 
   return (
-    <header className="bg-white text-gray-800 flex justify-between items-center px-4 sm:px-6 py-4 shadow-sm font-fontTomorrow">
-      <div className="flex items-center gap-12">
-        <h1 className="text-2xl text-blue-600 font-bold">Liquo</h1>
-        <Navigation className="hidden lg:block" />
-      </div>
+    <header className=" bg-white text-gray-800 px-4 sm:px-6 py-4 shadow-sm font-fontTomorrow flex justify-center">
+      <div className="max-w-[1200px] container  flex justify-between items-center">
+        <div className="flex items-center gap-12">
+          <h1 className="text-2xl text-blue-600 font-bold">KMToken</h1>
+          <Navigation className="hidden lg:block" />
+        </div>
 
-      <div className="flex items-center gap-4">
-        <ConnectPart
-          ref={menuRef}
-          address={address}
-          connected={isConnected}
-          balance={balance.formatted}
-          showMenu={showMenu}
-          setShowMenu={setShowMenu}
-          onMenuToggle={() => setShowMenu((open) => !open)}
-        />
-        <button
-          onClick={() => setShowMobileMenu(true)}
-          className="p-2 hover:bg-gray-100 rounded-lg lg:hidden"
-        >
-          <Menu className="w-6 h-6" />
-        </button>
+        <div className="flex items-center gap-4">
+          <ConnectPart
+            ref={menuRef}
+            address={address}
+            connected={isConnected}
+            balance={balance.formatted}
+            showMenu={showMenu}
+            setShowMenu={setShowMenu}
+            onMenuToggle={() => setShowMenu((open) => !open)}
+          />
+          <button
+            onClick={() => setShowMobileMenu(true)}
+            className="p-2 hover:bg-gray-100 rounded-lg lg:hidden"
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+        </div>
       </div>
 
       {showMobileMenu && (
