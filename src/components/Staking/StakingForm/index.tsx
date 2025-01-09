@@ -6,22 +6,8 @@ import StakeInput from "./StakeInput";
 import TransactionDetails from "./TransactionDetails";
 import TermsCheckbox from "./TermsCheckbox";
 import StakeButton from "./StakeButton";
-import { useToast } from "@/app/hooks/useToast";
 
-import { useEthersSigner } from "@/app/hooks/wagmi/utils";
-import {
-  approveTx,
-  getBalance,
-  stakeTx,
-  unstakeTx,
-  getStakedAmount,
-} from "@/blockchain";
-import {
-  formatBalance,
-  formatBalanceToNumber,
-  tokenSymbol,
-} from "@/blockchain/utils";
-import { JsonRpcSigner } from "ethers";
+import { tokenSymbol } from "@/blockchain/utils";
 
 export enum TabType {
   Faucet = "faucet",
@@ -45,123 +31,28 @@ const StakingForm = () => {
   });
   const [error, setError] = useState("");
 
-  const signer = useEthersSigner();
-  const toast = useToast();
-
-  // Fetch token balance
-  useEffect(() => {
-    if (!signer) return;
-
-    const getKommunityTokenBalance = async () => {
-      const balance = await getBalance(signer.address, signer);
-
-      setTokenBalance({
-        balance,
-        formattedBalance: formatBalance(balance),
-      });
-    };
-
-    getKommunityTokenBalance();
-  }, [signer]);
-
-  // Fetch staked amount when unstake tab is selected
-  useEffect(() => {
-    if (!signer) return;
-
-    if (selectedTab === TabType.Unstake) {
-      fetchStakedAmount(signer);
-    }
-  }, [signer, selectedTab]);
-
   useEffect(() => {
     setAmount("");
   }, [selectedTab]);
 
   const handleMaxClick = () => {
-    const amount = formatBalanceToNumber(
-      selectedTab === TabType.Stake ? tokenBalance.balance : stakedAmount.amount
-    );
-
-    setAmount(amount.toString());
+    console.log("TODO: Handle Max Click");
   };
 
   const handleStake = async () => {
-    if (!signer || !amount) return;
-
-    setLoading(true);
-    try {
-      const hash = await stakeTx(amount, signer);
-      console.log({ hash });
-      toast.success(`Successfully staked. TxHash: ${hash}`);
-      setAmount("");
-      fetchStakedAmount(signer);
-    } catch (err: any) {
-      if (err.message === "APPROVE_REQUIRED") {
-        toast.error("You need to approve the tokens first");
-        setError(err.message);
-      } else {
-        toast.error(err.message || "Failed to stake tokens");
-      }
-    } finally {
-      setLoading(false);
-    }
+    console.log("TODO: Stake functionality");
   };
 
   const handleUnstake = async () => {
-    if (!signer) return;
-
-    setLoading(true);
-    try {
-      const hash = await unstakeTx(signer);
-      console.log({ hash });
-      toast.success(`Successfully unstaked. TxHash: ${hash}`);
-      setError("");
-    } catch (err: any) {
-      toast.error(err.message || "Failed to unstake tokens");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+    console.log("TODO: Unstake functionality");
   };
 
   const handleApprove = async () => {
-    if (!signer || !amount) return;
-
-    setLoading(true);
-    try {
-      const hash = await approveTx(amount, signer);
-      console.log({ hash });
-      toast.success(`Successfully approved. TxHash: ${hash}`);
-
-      // we always approve during stake
-      await handleStake();
-    } catch (err: any) {
-      toast.error(err.message || "Failed to approve tokens");
-      console.error(err);
-      setLoading(false);
-    }
-  };
-
-  const fetchStakedAmount = async (signer: JsonRpcSigner) => {
-    const amount = await getStakedAmount(signer);
-    setStakedAmount({
-      amount,
-      formattedAmount: formatBalance(amount),
-    });
+    console.log("TODO: Approve functionality");
   };
 
   const handleFormAction = () => {
-    if (selectedTab === TabType.Stake) {
-      if (error && error === "APPROVE_REQUIRED") {
-        handleApprove();
-      } else {
-        handleStake();
-      }
-    } else if (selectedTab === TabType.Unstake) {
-      handleUnstake();
-    } else {
-      console.log("TODO: Wrong tab selected");
-    }
+    console.log("TODO: Form action");
   };
 
   return (
@@ -203,7 +94,7 @@ const StakingForm = () => {
         />
 
         <StakeButton
-          disabled={!isTermsAccepted || !amount || !signer}
+          disabled={!isTermsAccepted}
           onClick={handleFormAction}
           loading={isLoading}
           btnText={

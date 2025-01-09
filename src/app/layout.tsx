@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Tomorrow } from "next/font/google";
 import "./globals.css";
-import { WagmiProviders } from "../wagmi/Provider";
 import DefaultLayout from "@/layouts/DefaultLayout";
 import { Toaster } from "react-hot-toast";
 
@@ -36,10 +35,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${fontTomorrow.variable} antialiased`}
       >
-        <WagmiProviders>
-          <DefaultLayout>{children}</DefaultLayout>
-          <Toaster position="top-center" />
-        </WagmiProviders>
+        <DefaultLayout>{children}</DefaultLayout>
+        <Toaster position="top-center" />
       </body>
     </html>
   );

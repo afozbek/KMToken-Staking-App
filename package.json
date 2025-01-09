@@ -9,16 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^5.1.0",
-    "@tanstack/react-query": "^5.62.14",
-    "ethers": "^6.13.4",
     "lucide-react": "^0.469.0",
     "next": "15.1.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-hot-toast": "^2.5.1",
-    "viem": "^2.21.56",
-    "wagmi": "^2.14.6"
+    "react-hot-toast": "^2.5.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

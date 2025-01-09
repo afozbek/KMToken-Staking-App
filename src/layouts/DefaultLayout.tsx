@@ -9,7 +9,7 @@ export default function DefaultLayout({
     <div className="min-h-screen flex flex-col ">
       <Header />
 
-      <div className="mb-6">{children}</div>
+      <main className="mb-6">{children}</main>
 
       {/* Copyright to Dribble */}
       <footer className="text-center text-gray-500 text-sm mb-10">

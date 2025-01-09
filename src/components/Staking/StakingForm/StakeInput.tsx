@@ -22,7 +22,8 @@ const StakeInput = ({
           type="number"
           value={amount}
           onChange={(e) => onAmountChange(e.target.value)}
-          className="w-full pl-12 pr-20 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full pl-12 pr-20 py-3 border border-gray-200 rounded-lg 
+          focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
           placeholder="0.0"
           min="0"
           step="0.1"

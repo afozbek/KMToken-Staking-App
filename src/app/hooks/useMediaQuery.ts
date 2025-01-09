@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 export function useMediaQuery(query: string): boolean {
-  // Initialize with null and update after mount to avoid hydration mismatch
+  // Initialize with false and update after mount to avoid hydration mismatch
   const [matches, setMatches] = useState<boolean>(false);
 
   useEffect(() => {

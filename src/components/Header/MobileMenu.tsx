@@ -2,7 +2,6 @@ import { X } from "lucide-react";
 import TokenIcon from "../icons/TokenIcon";
 import { navLinks, NavLinkType } from "./Navigation";
 import React from "react";
-import { useClientDisconnect } from "@/app/hooks/wagmi/utils";
 
 interface MobileMenuProps {
   onClose: () => void;
@@ -12,11 +11,8 @@ interface MobileMenuProps {
 
 const MobileMenu = React.forwardRef<HTMLDivElement, MobileMenuProps>(
   ({ onClose, address, balance }, ref) => {
-    const { disconnectAccount } = useClientDisconnect();
-
     const handleLinkClick = (id: string) => {
       if (id === NavLinkType.LOGOUT) {
-        disconnectAccount();
         onClose();
       }
     };
@@ -35,7 +31,7 @@ const MobileMenu = React.forwardRef<HTMLDivElement, MobileMenuProps>(
           </div>
 
           {address && (
-            <div className="p-4 bg-gray-50 rounded-lg mb-8">
+            <div className="p-4 bg-gray-100 border border-gray-300 shadow-md rounded-lg mb-8">
               <div className="flex items-center gap-2 mb-4">
                 <TokenIcon />
                 <span className="font-medium">{balance} ETH</span>

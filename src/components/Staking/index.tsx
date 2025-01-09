@@ -2,12 +2,11 @@
 
 import React from "react";
 import StakingForm from "./StakingForm";
-import { useAccount } from "wagmi";
 import StakingConnectCTA from "./StakingConnectCTA";
 
 const StakingContainer = () => {
-  const { address, isConnected } = useAccount();
-
+  const address = "0x0";
+  const isConnected = true;
   return (
     <>{address && isConnected ? <StakingForm /> : <StakingConnectCTA />}</>
   );
