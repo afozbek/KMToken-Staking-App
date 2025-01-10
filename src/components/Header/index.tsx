@@ -10,38 +10,22 @@ import Navigation from "./Navigation";
 import MobileMenu from "./MobileMenu";
 import ConnectPart from "./ConnectPart";
 import HeaderSkeleton from "./HeaderSkeleton";
+import useTokenBalance from "@/app/hooks/useTokenBalance";
 
 export default function Header() {
   const { address, isConnected } = useAccount();
   const [showMenu, setShowMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [balance, setBalance] = useState({ raw: "0", formatted: "0" });
 
   const menuRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
-  const signer = useEthersSigner();
+
+  const { balanceFormatted } = useTokenBalance(address);
 
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  useEffect(() => {
-    const fetchBalance = async () => {
-      if (!signer || !address) return;
-      try {
-        const rawBalance = await getBalance(address, signer);
-        setBalance({
-          raw: rawBalance,
-          formatted: formatBalance(rawBalance),
-        });
-      } catch (error) {
-        console.error("Error fetching balance:", error);
-      }
-    };
-
-    fetchBalance();
-  }, [signer, address]);
 
   useClickOutside(menuRef, () => {
     setShowMenu(false);
@@ -68,7 +52,7 @@ export default function Header() {
             ref={menuRef}
             address={address}
             connected={isConnected}
-            balance={balance.formatted}
+            balance={balanceFormatted}
             showMenu={showMenu}
             setShowMenu={setShowMenu}
             onMenuToggle={() => setShowMenu((open) => !open)}
@@ -87,7 +71,7 @@ export default function Header() {
           ref={mobileMenuRef}
           onClose={() => setShowMobileMenu(false)}
           address={address}
-          balance={balance.formatted}
+          balance={balanceFormatted}
         />
       )}
     </header>

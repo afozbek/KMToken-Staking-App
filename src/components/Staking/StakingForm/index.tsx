@@ -9,13 +9,7 @@ import StakeButton from "./StakeButton";
 import { useToast } from "@/app/hooks/useToast";
 
 import { useEthersSigner } from "@/app/hooks/wagmi/utils";
-import {
-  approveTx,
-  getBalance,
-  stakeTx,
-  unstakeTx,
-  getStakedAmount,
-} from "@/blockchain";
+import { approveTx, stakeTx, unstakeTx, getStakedAmount } from "@/blockchain";
 import {
   formatBalance,
   formatBalanceToNumber,
@@ -23,6 +17,7 @@ import {
 } from "@/blockchain/utils";
 import { JsonRpcSigner } from "ethers";
 import useFaucet from "@/app/hooks/useFaucet";
+import useTokenBalance from "@/app/hooks/useTokenBalance";
 
 export enum TabType {
   Faucet = "faucet",
@@ -52,21 +47,17 @@ const StakingForm = () => {
   const signer = useEthersSigner();
   const toast = useToast();
 
+  const { balance, refetch } = useTokenBalance(signer?.address);
+
   // Fetch token balance
   useEffect(() => {
-    if (!signer) return;
-
-    const getKommunityTokenBalance = async () => {
-      const balance = await getBalance(signer.address, signer);
-
+    if (balance) {
       setTokenBalance({
         balance,
         formattedBalance: formatBalance(balance),
       });
-    };
-
-    getKommunityTokenBalance();
-  }, [signer]);
+    }
+  }, [balance]);
 
   // Fetch staked amount when unstake tab is selected
   useEffect(() => {
@@ -96,7 +87,7 @@ const StakingForm = () => {
     try {
       const hash = await stakeTx(amount, signer);
       console.log({ hash });
-      toast.success(`Successfully staked. TxHash: ${hash}`);
+      handleTxSuccess(`Successfully staked. TxHash: ${hash}`);
       setAmount("");
       fetchStakedAmount(signer);
     } catch (err: any) {
@@ -118,7 +109,7 @@ const StakingForm = () => {
     try {
       const hash = await unstakeTx(signer);
       console.log({ hash });
-      toast.success(`Successfully unstaked. TxHash: ${hash}`);
+      handleTxSuccess(`Successfully unstaked. TxHash: ${hash}`);
       setError("");
     } catch (err: any) {
       toast.error(err.message || "Failed to unstake tokens");
@@ -135,15 +126,21 @@ const StakingForm = () => {
     try {
       const hash = await approveTx(amount, signer);
       console.log({ hash });
-      toast.success(`Successfully approved. TxHash: ${hash}`);
+      handleTxSuccess(`Successfully approved. TxHash: ${hash}`);
 
       // we always approve during stake
       await handleStake();
+      setError("");
     } catch (err: any) {
       toast.error(err.message || "Failed to approve tokens");
       console.error(err);
       setLoading(false);
     }
+  };
+
+  const handleTxSuccess = (message: string) => {
+    refetch(); // refetch token balance
+    toast.success(message);
   };
 
   const fetchStakedAmount = async (signer: JsonRpcSigner) => {
