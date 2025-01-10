@@ -2,9 +2,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useClickOutside } from "@/app/hooks/useClickOutside";
 import { useAccount } from "wagmi";
-import { useEthersSigner } from "@/app/hooks/wagmi/utils";
-import { getBalance } from "@/blockchain";
-import { formatBalance } from "@/blockchain/utils";
 import { Menu } from "lucide-react";
 import Navigation from "./Navigation";
 import MobileMenu from "./MobileMenu";
