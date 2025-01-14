@@ -8,6 +8,7 @@ import MobileMenu from "./MobileMenu";
 import ConnectPart from "./ConnectPart";
 import HeaderSkeleton from "./HeaderSkeleton";
 import useTokenBalance from "@/app/hooks/useTokenBalance";
+import Link from "next/link";
 
 export default function Header() {
   const { address, isConnected } = useAccount();
@@ -40,7 +41,9 @@ export default function Header() {
     <header className=" bg-white text-gray-800 px-4 sm:px-6 py-4 shadow-sm font-fontTomorrow flex justify-center">
       <div className="max-w-[1200px] container  flex justify-between items-center">
         <div className="flex items-center gap-12">
-          <h1 className="text-2xl text-blue-600 font-bold">KMToken</h1>
+          <Link href="/" className="text-2xl text-blue-600 font-bold">
+            KMToken
+          </Link>
           <Navigation className="hidden lg:block" />
         </div>
 

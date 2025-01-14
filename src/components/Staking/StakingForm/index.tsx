@@ -18,6 +18,7 @@ import {
 import { JsonRpcSigner } from "ethers";
 import useFaucet from "@/app/hooks/useFaucet";
 import useTokenBalance from "@/app/hooks/useTokenBalance";
+import BalanceDisplay from "./BalanceDisplay";
 
 export enum TabType {
   Faucet = "faucet",
@@ -191,31 +192,16 @@ const StakingForm = () => {
         />
 
         {/* Balance Display */}
-        <div className="mb-4 text-sm text-gray-600 flex justify-between">
-          {selectedTab === TabType.Stake ? (
-            <div>
-              Available: {tokenBalance.formattedBalance} {tokenSymbol}
-            </div>
-          ) : (
-            <div>
-              Staked: {stakedAmount.formattedAmount} {tokenSymbol}
-            </div>
-          )}
-
-          <>
-            {isFaucetEnabledForUser && (
-              <p className="text-gray-600">
-                <button
-                  className="text-blue-500 hover:underline"
-                  onClick={claimTokens}
-                  disabled={faucetLoading || !faucetEnabled}
-                >
-                  Low on balance?
-                </button>
-              </p>
-            )}
-          </>
-        </div>
+        <BalanceDisplay
+          selectedTab={selectedTab}
+          tokenBalance={tokenBalance}
+          tokenSymbol={tokenSymbol}
+          stakedAmount={stakedAmount}
+          isFaucetEnabledForUser={isFaucetEnabledForUser}
+          claimTokens={claimTokens}
+          faucetLoading={faucetLoading}
+          faucetEnabled={faucetEnabled}
+        />
 
         <TransactionDetails />
 
