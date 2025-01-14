@@ -9,6 +9,21 @@ on:
       - main
 
 jobs:
+  install:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Dependencies
+        run: pnpm install
+
   checking-tests:
     runs-on: ubuntu-latest
 
@@ -22,19 +37,4 @@ jobs:
           node-version: 20
 
       - name: Install Dependencies
-        run: npm test
-
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Set Up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install Dependencies
-        run: npm install
+        run: pnpm test
