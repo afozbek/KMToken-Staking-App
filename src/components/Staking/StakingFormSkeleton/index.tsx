@@ -2,7 +2,7 @@ import React from "react";
 
 const StakingFormSkeleton = () => {
   return (
-    <div className="p-5 lg:p-0">
+    <div data-testid="staking-form-skeleton" className="p-5 lg:p-0">
       <div className="bg-white rounded-xl p-6 max-w-md mx-auto font-fontTomorrow mt-10">
         {/* Header */}
         <div className="text-center mb-6">

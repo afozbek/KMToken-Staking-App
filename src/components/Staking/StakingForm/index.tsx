@@ -174,7 +174,7 @@ const StakingForm = () => {
   }, [tokenBalance.balance, faucetEnabled]);
 
   return (
-    <div className="p-5 lg:p-0">
+    <div data-testid="staking-form" className="p-5 lg:p-0">
       <div className="bg-white rounded-xl p-6 max-w-md mx-auto font-fontTomorrow mt-10">
         <div className="text-center mb-6">
           <h2 className="text-xl font-semibold mb-2">Stake {tokenSymbol}</h2>
