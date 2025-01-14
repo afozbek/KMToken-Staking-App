@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 import StakingContainer from "../index";
 import { useAccount, useReadContract } from "wagmi";
 
@@ -39,15 +39,25 @@ describe("StakingContainer", () => {
     jest.clearAllMocks();
   });
 
-  it("should render form when connected", () => {
-    // Set up mock return values
+  it("should show connect CTA when not connected", async () => {
     (useAccount as jest.Mock).mockReturnValue({
       isConnecting: false,
-      isConnected: true,
-      address: "0xeEBd581f950d4D249989063C18508F32890DFdC3",
+      isConnected: false,
+      address: null,
     });
+
     render(<StakingContainer />);
-    expect(screen.getByTestId("staking-form")).toBeInTheDocument();
+
+    // After the effect runs, should show CTA
+    await act(async () => {
+      // Wait for next tick to let useEffect run
+      await new Promise((resolve) => setTimeout(resolve, 50));
+    });
+
+    expect(
+      screen.queryByTestId("staking-form-skeleton")
+    ).not.toBeInTheDocument();
+    expect(screen.getByTestId("staking-connect-cta")).toBeInTheDocument();
   });
 
   it("should render skeleton when loading", () => {
@@ -61,14 +71,13 @@ describe("StakingContainer", () => {
     expect(screen.getByTestId("staking-form-skeleton")).toBeInTheDocument();
   });
 
-  it("should render connect CTA when not connected", () => {
+  it("should show Staking Form when connected", () => {
     (useAccount as jest.Mock).mockReturnValue({
       isConnecting: false,
-      isConnected: false,
-      address: null,
+      isConnected: true,
+      address: "0xeEBd581f950d4D249989063C18508F32890DFdC3",
     });
-
     render(<StakingContainer />);
-    expect(screen.getByTestId("staking-connect-cta")).toBeInTheDocument();
+    expect(screen.getByTestId("staking-form")).toBeInTheDocument();
   });
 });

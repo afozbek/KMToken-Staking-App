@@ -6,7 +6,7 @@ const StakingConnectCTA = () => {
   const { connectAccount } = useClientConnect();
 
   return (
-    <div date-testid="staking-connect-cta" className="p-5 lg:p-0">
+    <div data-testid="staking-connect-cta" className="p-5 lg:p-0">
       <div className="bg-white rounded-xl p-6 max-w-md mx-auto font-fontTomorrow mt-10">
         <div className="text-center mb-6">
           <h2 className="text-xl font-semibold mb-2">Stake {tokenSymbol}</h2>
