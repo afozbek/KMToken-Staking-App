@@ -22,9 +22,10 @@ jobs:
           node-version: 20
 
       - name: Install Dependencies
-        run: pnpm install
+        run: npm install
 
   checking-tests:
+    needs: install
     runs-on: ubuntu-latest
 
     steps:
@@ -36,5 +37,5 @@ jobs:
         with:
           node-version: 20
 
-      - name: Install Dependencies
-        run: pnpm test
+      - name: Run Tests
+        run: npm test
