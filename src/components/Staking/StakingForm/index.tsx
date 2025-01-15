@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import TabButtons from "./TabButtons";
 import StakeInput from "./StakeInput";
 import TransactionDetails from "./TransactionDetails";
@@ -73,13 +73,12 @@ const StakingForm = () => {
     setAmount("");
   }, [selectedTab]);
 
-  const handleMaxClick = () => {
+  const handleMaxClick = useCallback(() => {
     const amount = formatBalanceToNumber(
       selectedTab === TabType.Stake ? tokenBalance.balance : stakedAmount.amount
     );
-
     setAmount(amount.toString());
-  };
+  }, [selectedTab, tokenBalance.balance, stakedAmount.amount]);
 
   const handleStake = async () => {
     if (!signer || !amount) return;
@@ -166,15 +165,12 @@ const StakingForm = () => {
     }
   };
 
-  const isFaucetEnabledForUser = useMemo(() => {
-    return (
-      formatBalanceToNumber(tokenBalance.balance) < MAX_BALANCE_FOR_FAUCET &&
-      faucetEnabled
-    );
-  }, [tokenBalance.balance, faucetEnabled]);
+  const isFaucetEnabledForUser =
+    formatBalanceToNumber(tokenBalance.balance) < MAX_BALANCE_FOR_FAUCET &&
+    faucetEnabled;
 
   return (
-    <div className="p-5 lg:p-0">
+    <div data-testid="staking-form" className="p-5 lg:p-0">
       <div className="bg-white rounded-xl p-6 max-w-md mx-auto font-fontTomorrow mt-10">
         <div className="text-center mb-6">
           <h2 className="text-xl font-semibold mb-2">Stake {tokenSymbol}</h2>

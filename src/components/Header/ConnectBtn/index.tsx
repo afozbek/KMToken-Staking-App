@@ -7,6 +7,7 @@ export default function ConnectBtn() {
 
   return (
     <button
+      data-testid="connect-btn"
       className="bg-foreground text-background p-2 rounded-md"
       onClick={connectAccount}
     >
