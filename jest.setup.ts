@@ -1,11 +1,6 @@
 import "@testing-library/jest-dom";
 import { useReadContract } from "wagmi";
 
-// Mock the wagmi hook
-jest.mock("@/app/hooks/wagmi/utils", () => ({
-  useClientConnect: jest.fn(),
-}));
-
 // Mock the entire wagmi module and its dependencies
 jest.mock("wagmi", () => ({
   useAccount: jest.fn(),
