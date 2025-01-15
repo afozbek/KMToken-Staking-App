@@ -42,8 +42,7 @@ export function _clientToSigner(client: Client<Transport, Chain, Account>) {
 export function useClientConnect() {
   const { connect } = useConnect();
   const { error } = useToast();
-  const isMobile = useMediaQuery("(max-width: 546px)");
-  console.log({ isMobile });
+  useMediaQuery("(max-width: 546px)");
 
   // TODO: Add mobile wallet connect
 
