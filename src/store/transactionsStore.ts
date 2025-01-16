@@ -7,11 +7,11 @@ export interface Transaction {
 }
 
 // Add mock transactions (replace with real data later)
-const mockTransactions: Transaction[] = [
-  { action: "stake", amount: "100", hash: "0x123..." },
-  { action: "unstake", amount: "50", hash: "0x456..." },
-  { action: "approve", amount: "200", hash: "0x789..." },
-];
+// const mockTransactions: Transaction[] = [
+//   { action: "stake", amount: "100", hash: "0x123..." },
+//   { action: "unstake", amount: "50", hash: "0x456..." },
+//   { action: "approve", amount: "200", hash: "0x789..." },
+// ];
 
 export const getTransactions = (): Transaction[] => {
   const transactions = localStorage.getItem("transactions");
