@@ -12,6 +12,7 @@ import {
   KommunityTokenAbi,
   StakingAbi,
 } from "@/blockchain/blockchainUtils/abi";
+import { addTransaction } from "@/store/transactionsStore";
 
 // --------------------------------TOKEN CONTRACT UTILS---------------------------------------------
 
@@ -58,6 +59,12 @@ export const approveTx = async (amount: string, signer: JsonRpcSigner) => {
 
   const tx = await signer.sendTransaction(rawTx);
   await tx.wait();
+
+  addTransaction({
+    action: "approve",
+    amount,
+    hash: tx.hash,
+  });
 
   return tx.hash;
 };
@@ -113,6 +120,12 @@ export const stakeTx = async (amount: string, signer: JsonRpcSigner) => {
 
   await tx.wait();
 
+  addTransaction({
+    action: "stake",
+    amount,
+    hash: tx.hash,
+  });
+
   return tx.hash;
 };
 
@@ -129,6 +142,12 @@ export const unstakeTx = async (signer: JsonRpcSigner) => {
 
   await tx.wait();
 
+  addTransaction({
+    action: "unstake",
+    amount: "0",
+    hash: tx.hash,
+  });
+
   return tx.hash;
 };
 
@@ -141,7 +160,7 @@ export const getStakedAmount = async (signer: JsonRpcSigner) => {
 
   const stake = await stakingContract.stakes(signer.address);
 
-  return stake.amount;
+  return { amount: stake.amount, reward: stake.reward };
 };
 
 // ---------------------------------FAUCET CONTRACT ---------------------------------------------------
@@ -154,6 +173,12 @@ export const claimTokensTx = async (signer: JsonRpcSigner) => {
   const tx = await signer.sendTransaction({ ...rawTx });
 
   await tx.wait();
+
+  addTransaction({
+    action: "claim",
+    amount: "0",
+    hash: tx.hash,
+  });
 
   return tx.hash;
 };

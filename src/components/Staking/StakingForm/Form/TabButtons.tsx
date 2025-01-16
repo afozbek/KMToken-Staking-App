@@ -1,4 +1,4 @@
-import { TabType } from ".";
+import { TabType } from "..";
 
 interface TabButtonsProps {
   selectedTab: TabType;

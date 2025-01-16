@@ -1,4 +1,4 @@
-import TokenIcon from "../../icons/TokenIcon";
+import TokenIcon from "../../../icons/TokenIcon";
 import { memo } from "react";
 
 interface StakeInputProps {
