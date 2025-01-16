@@ -5,7 +5,10 @@ interface Props {
   selectedTab: TabType;
   tokenBalance: { formattedBalance: string };
   tokenSymbol: string;
-  stakedAmount: { formattedAmount: string };
+  stakedAmount: {
+    formattedAmount: string;
+    formattedAmountWithReward: string;
+  };
   isFaucetEnabledForUser: boolean;
   claimTokens: () => void;
   faucetLoading: boolean;
@@ -30,7 +33,7 @@ const BalanceDisplay = ({
         </div>
       ) : (
         <div>
-          Staked: {stakedAmount.formattedAmount} {tokenSymbol}
+          Staked: {stakedAmount.formattedAmountWithReward} {tokenSymbol}
         </div>
       )}
 

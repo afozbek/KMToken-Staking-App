@@ -11,13 +11,11 @@ const StakingContainer = () => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (!isConnecting) {
-      setMounted(true);
-    }
-  }, [isConnecting]);
+    setMounted(true);
+  }, []);
 
   // Show StakingFormSkeleton while mounting
-  if (!mounted) {
+  if (!mounted || isConnecting) {
     return <StakingFormSkeleton />;
   }
 

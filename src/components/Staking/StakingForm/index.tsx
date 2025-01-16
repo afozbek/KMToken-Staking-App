@@ -1,11 +1,9 @@
 "use client";
 
 import React, { useCallback, useEffect, useState } from "react";
-import TabButtons from "./TabButtons";
-import StakeInput from "./StakeInput";
-import TransactionDetails from "./TransactionDetails";
-import TermsCheckbox from "./TermsCheckbox";
-import StakeButton from "./StakeButton";
+import StakeInput from "./Form/StakeInput";
+import TransactionDetails from "./Transactions/TransactionDetails";
+import TermsCheckbox from "./Form/TermsCheckbox";
 import { useToast } from "@/app/hooks/useToast";
 
 import { useEthersSigner } from "@/app/hooks/wagmi/utils";
@@ -20,6 +18,26 @@ import useFaucet from "@/app/hooks/useFaucet";
 import useTokenBalance from "@/app/hooks/useTokenBalance";
 import BalanceDisplay from "./BalanceDisplay";
 
+import TransactionsToggle from "./Transactions/TransactionsToggle";
+import FormTitle from "./Form/FormTitle";
+import TabButtons from "./Form/TabButtons";
+import StakeButton from "./Form/StakeButton";
+import dynamic from "next/dynamic";
+import LoadingIcon from "@/components/icons/LoadingIcon";
+import { getTransactions } from "@/store/transactionsStore";
+const RecentTransactions = dynamic(
+  () => import("./Transactions/RecentTransactions"),
+  {
+    loading: () => (
+      <div className="absolute top-0 -right-2 z-0 translate-x-full w-80 h-80 bg-gray-100 rounded-lg animate-pulse">
+        <div className="flex items-center justify-center h-full">
+          <LoadingIcon />
+        </div>
+      </div>
+    ),
+  }
+);
+
 export enum TabType {
   Faucet = "faucet",
   Stake = "stake",
@@ -27,6 +45,12 @@ export enum TabType {
   Approve = "approve",
 }
 const MAX_BALANCE_FOR_FAUCET = 10; // 10 Kommunity Tokens
+
+export interface Transaction {
+  action: "stake" | "unstake" | "approve" | "claim";
+  amount: string;
+  hash: string;
+}
 
 const StakingForm = () => {
   const [selectedTab, setSelectedTab] = useState<TabType>(TabType.Stake);
@@ -37,11 +61,15 @@ const StakingForm = () => {
     balance: "0",
     formattedBalance: "0",
   });
-  const [stakedAmount, setStakedAmount] = useState({
+  const [stakedAmountWithReward, setStakedAmountWithReward] = useState({
     amount: "0",
     formattedAmount: "0",
+    reward: "0",
+    formattedAmountWithReward: "0",
   });
   const [error, setError] = useState("");
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [opened, setOpened] = useState(false);
 
   const { faucetLoading, claimTokens, faucetEnabled } = useFaucet();
 
@@ -57,6 +85,7 @@ const StakingForm = () => {
         balance,
         formattedBalance: formatBalance(balance),
       });
+      setTransactions(getTransactions());
     }
   }, [balance]);
 
@@ -75,10 +104,12 @@ const StakingForm = () => {
 
   const handleMaxClick = useCallback(() => {
     const amount = formatBalanceToNumber(
-      selectedTab === TabType.Stake ? tokenBalance.balance : stakedAmount.amount
+      selectedTab === TabType.Stake
+        ? tokenBalance.balance
+        : stakedAmountWithReward.amount
     );
     setAmount(amount.toString());
-  }, [selectedTab, tokenBalance.balance, stakedAmount.amount]);
+  }, [selectedTab, tokenBalance.balance, stakedAmountWithReward.amount]);
 
   const handleStake = async () => {
     if (!signer || !amount) return;
@@ -141,13 +172,22 @@ const StakingForm = () => {
   const handleTxSuccess = (message: string) => {
     refetch(); // refetch token balance
     toast.success(message);
+    setTransactions(getTransactions());
   };
 
   const fetchStakedAmount = async (signer: JsonRpcSigner) => {
-    const amount = await getStakedAmount(signer);
-    setStakedAmount({
+    const { amount, reward } = await getStakedAmount(signer);
+    const formattedAmount = formatBalance(amount);
+    const formattedReward = formatBalance(reward);
+    const formattedAmountWithReward = String(
+      Number(formattedAmount) + Number(formattedReward)
+    );
+
+    setStakedAmountWithReward({
       amount,
-      formattedAmount: formatBalance(amount),
+      formattedAmount,
+      reward,
+      formattedAmountWithReward,
     });
   };
 
@@ -171,16 +211,14 @@ const StakingForm = () => {
 
   return (
     <div data-testid="staking-form" className="p-5 lg:p-0">
-      <div className="bg-white rounded-xl p-6 max-w-md mx-auto font-fontTomorrow mt-10">
-        <div className="text-center mb-6">
-          <h2 className="text-xl font-semibold mb-2">Stake {tokenSymbol}</h2>
-          <p className="text-gray-600">
-            Stake {tokenSymbol} and receive d{tokenSymbol} while staking
-          </p>
-        </div>
+      <div className="bg-white rounded-xl p-6 max-w-md mx-auto font-fontTomorrow mt-10 relative">
+        {/* TRANSACTIONS TOGGLE */}
+        <TransactionsToggle opened={opened} setOpened={setOpened} />
+        {opened && <RecentTransactions transactions={transactions} />}
 
+        {/* FORM */}
+        <FormTitle />
         <TabButtons selectedTab={selectedTab} onTabChange={setSelectedTab} />
-
         <StakeInput
           amount={amount}
           onAmountChange={setAmount}
@@ -192,7 +230,7 @@ const StakingForm = () => {
           selectedTab={selectedTab}
           tokenBalance={tokenBalance}
           tokenSymbol={tokenSymbol}
-          stakedAmount={stakedAmount}
+          stakedAmount={stakedAmountWithReward}
           isFaucetEnabledForUser={isFaucetEnabledForUser}
           claimTokens={claimTokens}
           faucetLoading={faucetLoading}
