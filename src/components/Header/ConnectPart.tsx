@@ -2,8 +2,17 @@ import React from "react";
 import Image from "next/image";
 import TokenIcon from "../icons/TokenIcon";
 import ConnectBtn from "./ConnectBtn";
-import DropdownMenu from "./DropdownMenu";
 import { tokenSymbol } from "@/blockchain/utils";
+import dynamic from "next/dynamic";
+import LoadingIcon from "../icons/LoadingIcon";
+
+const DropdownMenu = dynamic(() => import("./DropdownMenu"), {
+  loading: () => (
+    <div className="absolute right-0 top-full mt-2 w-48 h-32 animate-pulse bg-white flex items-center justify-center">
+      <LoadingIcon />
+    </div>
+  ),
+});
 
 interface ConnectPartProps {
   address?: string;
