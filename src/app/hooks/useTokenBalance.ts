@@ -1,6 +1,6 @@
 import { KommunityTokenAbi } from "@/blockchain/blockchainUtils/abi";
 import { KOMMUNUTY_TOKEN_CONTRACT_ADDRESS } from "@/blockchain/blockchainUtils/constants";
-import { formatBalance } from "@/blockchain/utils";
+import { formatBalance, formatBalanceToNumber } from "@/blockchain/utils";
 import { useReadContract, UseReadContractReturnType } from "wagmi";
 
 const useTokenBalance = (userAddress: string | undefined) => {
@@ -19,6 +19,7 @@ const useTokenBalance = (userAddress: string | undefined) => {
     balance: balanceToShow,
     isFetchingTokens: isFetching,
     balanceFormatted: formattedBalance,
+    balanceNumber: formatBalanceToNumber(balanceToShow),
     refetch,
   };
 };

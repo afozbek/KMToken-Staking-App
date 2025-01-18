@@ -3,12 +3,9 @@ import { TabType } from ".";
 
 interface Props {
   selectedTab: TabType;
-  tokenBalance: { formattedBalance: string };
   tokenSymbol: string;
-  stakedAmount: {
-    formattedAmount: string;
-    formattedAmountWithReward: string;
-  };
+  stakeAmountWithRewardFormatted: string;
+  balanceFormatted: string;
   isFaucetEnabledForUser: boolean;
   claimTokens: () => void;
   faucetLoading: boolean;
@@ -17,9 +14,9 @@ interface Props {
 
 const BalanceDisplay = ({
   selectedTab,
-  tokenBalance,
   tokenSymbol,
-  stakedAmount,
+  balanceFormatted,
+  stakeAmountWithRewardFormatted,
   isFaucetEnabledForUser,
   claimTokens,
   faucetLoading,
@@ -29,11 +26,11 @@ const BalanceDisplay = ({
     <div className="mb-4 text-sm text-gray-600 flex justify-between">
       {selectedTab === TabType.Stake ? (
         <div>
-          Available: {tokenBalance.formattedBalance} {tokenSymbol}
+          Available: {balanceFormatted} {tokenSymbol}
         </div>
       ) : (
         <div>
-          Staked: {stakedAmount.formattedAmountWithReward} {tokenSymbol}
+          Staked: {stakeAmountWithRewardFormatted} {tokenSymbol}
         </div>
       )}
 

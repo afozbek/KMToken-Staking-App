@@ -7,13 +7,8 @@ import TermsCheckbox from "./Form/TermsCheckbox";
 import { useToast } from "@/app/hooks/useToast";
 
 import { useEthersSigner } from "@/app/hooks/wagmi/utils";
-import { approveTx, stakeTx, unstakeTx, getStakedAmount } from "@/blockchain";
-import {
-  formatBalance,
-  formatBalanceToNumber,
-  tokenSymbol,
-} from "@/blockchain/utils";
-import { JsonRpcSigner } from "ethers";
+import { approveTx, stakeTx, unstakeTx } from "@/blockchain";
+import { formatBalanceToNumber, tokenSymbol } from "@/blockchain/utils";
 import useFaucet from "@/app/hooks/useFaucet";
 import useTokenBalance from "@/app/hooks/useTokenBalance";
 import BalanceDisplay from "./BalanceDisplay";
@@ -25,6 +20,7 @@ import StakeButton from "./Form/StakeButton";
 import dynamic from "next/dynamic";
 import LoadingIcon from "@/components/icons/LoadingIcon";
 import { getTransactions } from "@/store/transactionsStore";
+import { useStakedAmount } from "@/app/hooks/useStakedAmount";
 const RecentTransactions = dynamic(
   () => import("./Transactions/RecentTransactions"),
   {
@@ -57,16 +53,7 @@ const StakingForm = () => {
   const [amount, setAmount] = useState("");
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [tokenBalance, setTokenBalance] = useState({
-    balance: "0",
-    formattedBalance: "0",
-  });
-  const [stakedAmountWithReward, setStakedAmountWithReward] = useState({
-    amount: "0",
-    formattedAmount: "0",
-    reward: "0",
-    formattedAmountWithReward: "0",
-  });
+
   const [error, setError] = useState("");
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [opened, setOpened] = useState(false);
@@ -76,27 +63,22 @@ const StakingForm = () => {
   const signer = useEthersSigner();
   const toast = useToast();
 
-  const { balance, refetch } = useTokenBalance(signer?.address);
+  const {
+    data: { amount: stakedAmount, formattedAmountWithReward },
+    refetch: refetchStakedAmount,
+  } = useStakedAmount({
+    signer,
+    skip: selectedTab === TabType.Stake,
+  });
+
+  const { balance, balanceFormatted, balanceNumber, refetch } = useTokenBalance(
+    signer?.address
+  );
 
   // Fetch token balance
   useEffect(() => {
-    if (balance) {
-      setTokenBalance({
-        balance,
-        formattedBalance: formatBalance(balance),
-      });
-      setTransactions(getTransactions());
-    }
-  }, [balance]);
-
-  // Fetch staked amount when unstake tab is selected
-  useEffect(() => {
-    if (!signer) return;
-
-    if (selectedTab === TabType.Unstake) {
-      fetchStakedAmount(signer);
-    }
-  }, [signer, selectedTab]);
+    setTransactions(getTransactions());
+  }, []);
 
   useEffect(() => {
     setAmount("");
@@ -104,12 +86,10 @@ const StakingForm = () => {
 
   const handleMaxClick = useCallback(() => {
     const amount = formatBalanceToNumber(
-      selectedTab === TabType.Stake
-        ? tokenBalance.balance
-        : stakedAmountWithReward.amount
+      selectedTab === TabType.Stake ? balance : stakedAmount
     );
     setAmount(amount.toString());
-  }, [selectedTab, tokenBalance.balance, stakedAmountWithReward.amount]);
+  }, [selectedTab, balance, stakedAmount]);
 
   const handleStake = async () => {
     if (!signer || !amount) return;
@@ -120,7 +100,7 @@ const StakingForm = () => {
       console.log({ hash });
       handleTxSuccess(`Successfully staked. TxHash: ${hash}`);
       setAmount("");
-      fetchStakedAmount(signer);
+      refetchStakedAmount();
     } catch (err: any) {
       if (err.message === "APPROVE_REQUIRED") {
         toast.error("You need to approve the tokens first");
@@ -175,22 +155,6 @@ const StakingForm = () => {
     setTransactions(getTransactions());
   };
 
-  const fetchStakedAmount = async (signer: JsonRpcSigner) => {
-    const { amount, reward } = await getStakedAmount(signer);
-    const formattedAmount = formatBalance(amount);
-    const formattedReward = formatBalance(reward);
-    const formattedAmountWithReward = String(
-      Number(formattedAmount) + Number(formattedReward)
-    );
-
-    setStakedAmountWithReward({
-      amount,
-      formattedAmount,
-      reward,
-      formattedAmountWithReward,
-    });
-  };
-
   const handleFormAction = () => {
     if (selectedTab === TabType.Stake) {
       if (error && error === "APPROVE_REQUIRED") {
@@ -206,8 +170,7 @@ const StakingForm = () => {
   };
 
   const isFaucetEnabledForUser =
-    formatBalanceToNumber(tokenBalance.balance) < MAX_BALANCE_FOR_FAUCET &&
-    faucetEnabled;
+    balanceNumber < MAX_BALANCE_FOR_FAUCET && faucetEnabled;
 
   return (
     <div data-testid="staking-form" className="p-5 lg:p-0">
@@ -228,9 +191,9 @@ const StakingForm = () => {
         {/* Balance Display */}
         <BalanceDisplay
           selectedTab={selectedTab}
-          tokenBalance={tokenBalance}
           tokenSymbol={tokenSymbol}
-          stakedAmount={stakedAmountWithReward}
+          balanceFormatted={balanceFormatted}
+          stakeAmountWithRewardFormatted={formattedAmountWithReward}
           isFaucetEnabledForUser={isFaucetEnabledForUser}
           claimTokens={claimTokens}
           faucetLoading={faucetLoading}
