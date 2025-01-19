@@ -22,6 +22,7 @@ const StakeInput = memo(
             onChange={(e) => onAmountChange(e.target.value)}
             className="w-full pl-12 pr-20 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             placeholder="0.0"
+            inputMode="decimal"
             min="0"
             step="0.1"
           />

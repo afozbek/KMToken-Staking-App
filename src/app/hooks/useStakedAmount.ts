@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
-import { JsonRpcSigner } from "ethers";
+import { formatEther, JsonRpcSigner } from "ethers";
 import { getStakedAmount } from "@/blockchain";
-import { formatBalance } from "@/blockchain/utils";
+import { numberWithCommas } from "@/blockchain/utils";
 
 interface StakedAmountData {
   amount: string;
@@ -46,15 +46,16 @@ export const useStakedAmount = ({
 
     try {
       const { amount, reward } = await getStakedAmount(signer);
-      const formattedAmount = formatBalance(amount);
-      const formattedReward = formatBalance(reward);
-      const formattedAmountWithReward = String(
+      const formattedAmount = formatEther(amount);
+      const formattedReward = formatEther(reward);
+
+      const formattedAmountWithReward = numberWithCommas(
         Number(formattedAmount) + Number(formattedReward)
       );
 
       setData({
         amount,
-        formattedAmount,
+        formattedAmount: String(formattedAmount),
         reward,
         formattedAmountWithReward,
       });
