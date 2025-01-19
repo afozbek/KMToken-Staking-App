@@ -10,12 +10,13 @@ import {
   useConnect,
   useDisconnect,
 } from "wagmi";
-import { metaMask } from "wagmi/connectors";
+import { metaMask, walletConnect } from "wagmi/connectors";
 import { useToast } from "../useToast";
 import { baseSepolia } from "viem/op-stack";
 import { getAccount } from "wagmi/actions";
 import { config } from "@/wagmi/config";
 import { useMediaQuery } from "../useMediaQuery";
+import { getProjectId } from "./actions";
 
 /** Hook to convert a viem Wallet Client to an ethers.js Signer. */
 export function useEthersSigner({ chainId }: { chainId?: number } = {}) {
@@ -42,16 +43,21 @@ export function _clientToSigner(client: Client<Transport, Chain, Account>) {
 export function useClientConnect() {
   const { connect } = useConnect();
   const { error } = useToast();
-  useMediaQuery("(max-width: 546px)");
-
-  // TODO: Add mobile wallet connect
+  const isMobile = useMediaQuery("(max-width: 546px)");
 
   const connectAccount = async () => {
     try {
-      await connect({ connector: metaMask(), chainId: baseSepolia.id });
+      const connector = isMobile
+        ? walletConnect({ projectId: await getProjectId() })
+        : metaMask();
+      await connect({ connector, chainId: baseSepolia.id });
     } catch (err) {
       console.log(err);
-      error("Please install Metamask to connect your wallet");
+      error(
+        isMobile
+          ? "Please install a Web3 wallet to connect"
+          : "Please install Metamask to connect your wallet"
+      );
     }
   };
   return { connectAccount };
