@@ -38,7 +38,7 @@ const DropdownMenu = forwardRef<HTMLDivElement, Props>(
     return (
       <div
         ref={ref}
-        className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg py-2"
+        className="absolute right-0 top-full z-10 mt-2 w-48 bg-white rounded-lg shadow-lg py-2"
       >
         <button
           className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

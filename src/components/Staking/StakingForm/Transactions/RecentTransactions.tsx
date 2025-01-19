@@ -3,9 +3,22 @@ import { ExternalLink } from "lucide-react";
 import { Transaction } from "@/store/transactionsStore";
 
 const RecentTransactions = memo(
-  ({ transactions }: { transactions: Transaction[] }) => {
+  ({
+    transactions,
+    isMobile,
+  }: {
+    transactions: Transaction[];
+    isMobile?: boolean;
+  }) => {
     return (
-      <div className="absolute top-0 -right-2 z-0 translate-x-full bg-white shadow-lg p-4 rounded-xl w-80 overflow-y-auto max-h-[300px]">
+      <div
+        data-testid="recent-transactions-container"
+        className={` bg-white shadow-lg p-4 rounded-xl overflow-y-auto max-h-[400px]  ${
+          isMobile
+            ? "w-full mt-6" // mobile specific styles added
+            : "absolute top-0 -right-2 z-0 translate-x-full w-80  max-h-[300px]"
+        }`}
+      >
         <h3 className="font-semibold text-gray-800 mb-4">
           Recent Transactions
         </h3>
@@ -21,11 +34,13 @@ const RecentTransactions = memo(
                 key={index}
                 className="flex items-center justify-between bg-gray-50 p-3 rounded-lg"
               >
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium capitalize">
+                <div className="flex flex-col ">
+                  <span className="text-sm md:text-md font-semibold capitalize">
                     {tx.action}
                   </span>
-                  <span className="text-xs text-gray-500">{tx.amount} KMT</span>
+                  <span className="text-sm md:text-md text-gray-500">
+                    {tx.amount} KMT
+                  </span>
                   {/* <span className="text-xs text-gray-400 mt-1">
                     {new Date(tx.timestamp).toLocaleString()}
                   </span> */}

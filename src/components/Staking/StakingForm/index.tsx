@@ -21,6 +21,7 @@ import dynamic from "next/dynamic";
 import LoadingIcon from "@/components/icons/LoadingIcon";
 import { getTransactions } from "@/store/transactionsStore";
 import { useStakedAmount } from "@/app/hooks/useStakedAmount";
+import { useMediaQuery } from "@/app/hooks/useMediaQuery";
 const RecentTransactions = dynamic(
   () => import("./Transactions/RecentTransactions"),
   {
@@ -62,6 +63,8 @@ const StakingForm = () => {
 
   const signer = useEthersSigner();
   const toast = useToast();
+
+  const isTablet = useMediaQuery("(min-width: 768px)");
 
   const {
     data: { amount: stakedAmount, formattedAmountWithReward },
@@ -176,7 +179,9 @@ const StakingForm = () => {
     <div data-testid="staking-form" className="p-5 lg:p-0">
       <div className="bg-white rounded-xl p-6 max-w-md mx-auto font-fontTomorrow mt-10 relative">
         {/* TRANSACTIONS TOGGLE */}
-        <TransactionsToggle opened={opened} setOpened={setOpened} />
+        {isTablet && (
+          <TransactionsToggle opened={opened} setOpened={setOpened} />
+        )}
         {opened && <RecentTransactions transactions={transactions} />}
 
         {/* FORM */}
